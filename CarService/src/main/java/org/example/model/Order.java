@@ -3,24 +3,32 @@ package org.example.model;
 import org.example.Service.RepairerService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
 
-    private static final long completionTime = 2;
     private GarageSlot garageSlot;
-    private Repairer repairer;
+    private List<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
     private LocalDateTime creationDate;
     private LocalDateTime completionDate;
+    private static int orderCount;
+    private final int id;
 
-    public Order(GarageSlot garageSlot, Repairer repairer, int cost, boolean inProgress, LocalDateTime completionDate) {
+    public Order(int cost, GarageSlot garageSlot) {
         this.garageSlot = garageSlot;
-        this.repairer = repairer;
+        garageSlot.setAvailable(false);
         this.cost = cost;
-        this.inProgress = inProgress;
         this.creationDate = LocalDateTime.now();
-        this.completionDate = completionDate.plusDays(completionTime);
+        this.inProgress = true;
+        orderCount++;
+        id = orderCount;
+    }
+
+    public void addRepair(Repairer repairer){
+        repairers.add(repairer);
     }
 
     public GarageSlot getGarageSlot() {
@@ -31,12 +39,12 @@ public class Order {
         this.garageSlot = garageSlot;
     }
 
-    public Repairer getRepairer() {
-        return repairer;
+    public List<Repairer> getRepairers() {
+        return repairers;
     }
 
-    public void setRepairer(Repairer repairer) {
-        this.repairer = repairer;
+    public void setRepairers(List<Repairer> repairers) {
+        this.repairers = repairers;
     }
 
     public int getCost() {
@@ -71,11 +79,17 @@ public class Order {
         this.completionDate = completionDate;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
+
         return "Order{" +
-                "garageSlot=" + garageSlot +
-                ", repairer=" + repairer +
+                "id=" + id +
+                ", garageSlot=" + garageSlot +
+                ", repairer=" + repairers +
                 ", cost=" + cost +
                 ", inProgress=" + inProgress +
                 ", creationDate=" + creationDate +
