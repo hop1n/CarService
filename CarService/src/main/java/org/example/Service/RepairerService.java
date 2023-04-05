@@ -5,7 +5,7 @@ import org.example.model.Repairer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepairerService implements RepairerDAO{
+public class RepairerService {
 
     private final List<Repairer> repairers = new ArrayList<>();
 
