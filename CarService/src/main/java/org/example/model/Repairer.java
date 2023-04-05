@@ -1,31 +1,48 @@
 package org.example.model;
 
 public class Repairer {
+    private static int repairersCount;
+    private final int id;
     private final String name;
     private boolean isAvailable;
 
     public Repairer(String name) {
         this.name = name;
-        isAvailable = false;
+        id = repairersCount;
+        repairersCount++;
+        isAvailable = true;
+    }
+
+    public static int getRepairersCount() {
+        return repairersCount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean checkStatus() {
+    public boolean checkIsAvailable() {
         return isAvailable;
     }
 
-    public void setStatus(boolean status) {
-        isAvailable = status;
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
     @Override
     public String toString() {
         return "Repairer{" +
                 "name='" + name + '\'' +
-                ", status=" + isAvailable +
+                ", isAvailable=" + isAvailable +
+                ", id=" + id +
                 '}';
     }
 }
