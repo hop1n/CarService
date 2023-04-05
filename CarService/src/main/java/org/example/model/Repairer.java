@@ -8,8 +8,8 @@ public class Repairer {
 
     public Repairer(String name) {
         this.name = name;
-        id = repairersCount;
         repairersCount++;
+        id = repairersCount;
         isAvailable = true;
     }
 
@@ -39,10 +39,11 @@ public class Repairer {
 
     @Override
     public String toString() {
-        return "Repairer{" +
-                "name='" + name + '\'' +
-                ", isAvailable=" + isAvailable +
-                ", id=" + id +
+        return '\n'+
+                "Repairer{" +
+                "name='" + name + '\'' + ","+
+                "isAvailable=" + isAvailable  + ","+
+                "id=" + id  + ","+
                 '}';
     }
 }

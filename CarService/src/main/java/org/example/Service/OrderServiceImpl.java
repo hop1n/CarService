@@ -1,12 +1,10 @@
 package org.example.Service;
 
-import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,9 +22,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createOrder(int cost, int garageSlotId) {
+    public Order createOrder(int cost) {
 //        GarageSlot garageSlot = garageService.getById(garageSlotId);
-        Order order = new Order(cost, garageService.getById(garageSlotId));
+        Order order = new Order(cost);
         orders.add(order);
         return order;
     }
@@ -40,13 +38,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void assignRepairer(Order order, int... ids) {
         for (int id : ids) {
-            repairerService.getById(id).setIsAvailable(false);
             order.addRepair(repairerService.getById(id));
+            repairerService.getById(id).setIsAvailable(false);
         }
     }
 
     @Override
-    public void assignGarageSlot(int id) {
+    public void assignGarageSlot(Order order, int id) {
+        order.setGarageSlot(garageService.getById(id));
         garageService.getById(id).setAvailable(false);
     }
 
@@ -57,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
             order.setInProgress(false);
             List<Repairer> repairers = order.getRepairers();
             for (Repairer repairer : repairers) {
-                repairer.setIsAvailable(false);
+                repairer.setIsAvailable(true);
             }
             order.getGarageSlot().setAvailable(true);
             order.setCompletionDate(LocalDateTime.now());

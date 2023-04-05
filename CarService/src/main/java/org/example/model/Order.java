@@ -1,7 +1,5 @@
 package org.example.model;
 
-import org.example.Service.RepairerService;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +15,7 @@ public class Order {
     private static int orderCount;
     private final int id;
 
-    public Order(int cost, GarageSlot garageSlot) {
-        this.garageSlot = garageSlot;
-        garageSlot.setAvailable(false);
+    public Order(int cost) {
         this.cost = cost;
         this.creationDate = LocalDateTime.now();
         this.inProgress = true;
@@ -86,14 +82,15 @@ public class Order {
     @Override
     public String toString() {
 
-        return "Order{" +
-                "id=" + id +
-                ", garageSlot=" + garageSlot +
-                ", repairer=" + repairers +
-                ", cost=" + cost +
-                ", inProgress=" + inProgress +
-                ", creationDate=" + creationDate +
-                ", completionDate=" + completionDate +
+        return '\n'+
+                "Order{" +
+                "id=" + id + ","+
+                "garageSlot=" + garageSlot + ","+
+                "repairers=" + repairers + ","+
+                "cost=" + cost + ","+
+                "inProgress=" + inProgress + ","+
+                "creationDate=" + creationDate + ","+
+                "completionDate=" + completionDate +
                 '}';
     }
 }

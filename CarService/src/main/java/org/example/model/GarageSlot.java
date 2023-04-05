@@ -21,9 +21,10 @@ public class GarageSlot {
     }
     @Override
     public String toString() {
-        return "GarageSlot{" +
-                "id=" + id +
-                ", isAvailable=" + isAvailable +
+        return '\n'+
+                "GarageSlot{" +
+                "id=" + id  + ","+
+                "isAvailable=" + isAvailable  +
                 '}';
     }
 }
