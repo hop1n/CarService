@@ -69,10 +69,6 @@ public class Runner {
 
                 input = reader.readLine().toLowerCase().trim().replaceAll("[^\\da-zA-Zа-яёА-ЯЁ ]", "");
 
-                if (input.equals("")){
-                    System.out.println("");
-                }
-
                 if (input.equals("exit")) {
                     //тут будет сохранение в БД перед выходом
                     break;
@@ -109,8 +105,9 @@ public class Runner {
     public static void processRepairer(String[] words) {
         switch (words[1]) {
             case "add":
-                repairerService.add(new Repairer(words[2]));
-                System.out.printf("New repairer %s added successfully\n", words[2]);
+                //making first letter capital
+                repairerService.add(new Repairer(words[2].substring(0, 1).toUpperCase() + words[2].substring(1)));
+                System.out.printf("New repairer %s added successfully\n", words[2].substring(0, 1).toUpperCase() + words[2].substring(1));
                 break;
             case "remove":
                 repairerService.remove(Integer.parseInt(words[2]));
