@@ -4,93 +4,105 @@ import org.example.model.Order;
 import org.example.model.Repairer;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl {
+
+    enum Fields {
+        CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIR
+    }
 
     private final RepairerServiceImpl repairerService;
     private final GarageService garageService;
 
     private final List<Order> orders = new ArrayList<>();
 
-    public OrderServiceImpl (RepairerServiceImpl repairerService, GarageService garageService){
+    public OrderServiceImpl(RepairerServiceImpl repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
     }
 
-    @Override
     public Order createOrder(int cost) {
-//        GarageSlot garageSlot = garageService.getById(garageSlotId);
+        if (cost < 0) throw new IllegalArgumentException("Cost shouldn't be less then 0");
         Order order = new Order(cost);
         orders.add(order);
         return order;
     }
 
-    @Override
+
     public void removeOrder(int id) {
-        orders.removeIf(order -> order.getId() == id);
+        if (id < 0) throw new IllegalArgumentException("Cost shouldn't be less then 0");
+        for (Order order : orders) {
+            if (order.getId() == id) {
+                orders.remove(order);
+            } else throw new NoSuchElementException("There is no such ID");
+        }
     }
 
 
-    @Override
     public void assignRepairer(Order order, int... ids) {
         for (int id : ids) {
+            if (id < 0) throw new IllegalArgumentException("ID shouldn't be less then 0");
             order.addRepair(repairerService.getById(id));
             repairerService.getById(id).setIsAvailable(false);
         }
     }
 
-    @Override
+
     public void assignGarageSlot(Order order, int id) {
+        if (id < 0) throw new IllegalArgumentException("ID shouldn't be less then 0");
         order.setGarageSlot(garageService.getById(id));
         garageService.getById(id).setAvailable(false);
     }
 
-    @Override
+
     public void completeOrder(int id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny().orElse(null);
         if (order != null) {
             order.setInProgress(false);
-            List<Repairer> repairers = order.getRepairers();
+            Collection<Repairer> repairers = order.getRepairers();
             for (Repairer repairer : repairers) {
                 repairer.setIsAvailable(true);
             }
             order.getGarageSlot().setAvailable(true);
             order.setCompletionDate(LocalDateTime.now());
-        }
+        } else throw new IllegalArgumentException ("There is no order with such ID");
     }
 
-    @Override
+
     public Order getOrderById(int id) {
+        if (id < 0) throw new IllegalArgumentException("ID shouldn't be less then 0");
         return orders.stream().filter(order -> order.getId() == id).findAny().orElse(null);
     }
 
-    @Override
+
     public List<Order> getOrders() {
         return orders;
     }
 
-    @Override
-    public List<Order> getSortedOrders(int sortType) {
-        switch (sortType) {
-            case 1:
+
+    public List<Order> getSortedOrders(Fields fields) {
+        switch (fields) {
+            case CREATION:
                 return orders.stream().sorted(Comparator.comparing(Order::getCreationDate))
                         .collect(Collectors.toList());
-            case 2:
+            case COMPLETION:
                 return orders.stream().filter(order -> order.getCompletionDate() != null)
                         .sorted(Comparator.comparing(Order::getCompletionDate))
                         .collect(Collectors.toList());
-            case 3:
+            case COST:
                 return orders.stream().sorted(Comparator.comparing(Order::getCost))
                         .collect(Collectors.toList());
-            case 4:
+            case PROGRESS:
                 return orders.stream().sorted(Comparator.comparing(Order::isInProgress))
                         .collect(Collectors.toList());
-            case 5:
-                orders.sort(Comparator.comparingInt(o -> o.getRepairers().get(0).getId()));
+            case FINISHED:
+                return orders.stream().sorted(Comparator.comparing(x -> !x.isInProgress()))
+                        .collect(Collectors.toList());
+            case REPAIR:
+                orders.sort(Comparator.comparingInt(o -> o.getRepairers()
+                        .iterator().next().getId()));
                 return orders;
         }
         return orders;

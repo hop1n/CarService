@@ -49,7 +49,7 @@ public class ConsoleProcessor {
         orderService.completeOrder(order2.getId());
 
 
-        System.out.println(orderService.getSortedOrders(5));
+        System.out.println(orderService.getSortedOrders(OrderServiceImpl.Fields.COST));
     }
 
     //Method for input processing
@@ -191,7 +191,7 @@ public class ConsoleProcessor {
                 break;
 
             case "printlist":
-                System.out.println(orderService.getSortedOrders(Integer.parseInt(words[3])));
+                System.out.println(orderService.getSortedOrders(OrderServiceImpl.Fields.valueOf(words[3])));
                 break;
 
             case "get":
