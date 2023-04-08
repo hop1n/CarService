@@ -200,8 +200,10 @@ public class ConsoleProcessor {
                 try {
                     if (words[4].equals("repairer")) {
                         orderService.assignRepairer(orderService.getOrderById(Integer.parseInt(words[3])), Integer.parseInt(words[5]));
+                        System.out.printf("Repairer %d assigned to Order %d successfully", Integer.parseInt(words[5]), Integer.parseInt(words[3]));
                     } else if (words[4].equals("garage")) {
                         orderService.assignGarageSlot(orderService.getOrderById(Integer.parseInt(words[3])), Integer.parseInt(words[5]));
+                        System.out.printf("Garage %d assigned to Order %d successfully", Integer.parseInt(words[5]), Integer.parseInt(words[3]));
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
