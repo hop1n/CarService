@@ -6,6 +6,13 @@ public class Repairer {
     private final String name;
     private boolean isAvailable;
 
+    public Repairer() {
+        this.name = "";
+        repairersCount++;
+        id = repairersCount;
+        isAvailable = true;
+    }
+
     public Repairer(String name) {
         this.name = name;
         repairersCount++;
@@ -39,11 +46,11 @@ public class Repairer {
 
     @Override
     public String toString() {
-        return '\n'+
+        return '\n' +
                 "Repairer{" +
-                "name='" + name + '\'' + ","+
-                "isAvailable=" + isAvailable  + ","+
-                "id=" + id  + ","+
+                "name='" + name + '\'' + "," +
+                "isAvailable=" + isAvailable + "," +
+                "id=" + id + "," +
                 '}';
     }
 }

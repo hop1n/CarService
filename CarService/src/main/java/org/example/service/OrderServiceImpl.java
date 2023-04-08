@@ -23,7 +23,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(int cost) {
-//        GarageSlot garageSlot = garageService.getById(garageSlotId);
         Order order = new Order(cost);
         orders.add(order);
         return order;
@@ -39,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     public void assignRepairer(Order order, int... ids) {
         for (int id : ids) {
             order.addRepair(repairerService.getById(id));
-            repairerService.getById(id).setIsAvailable(false);
+            repairerService.getById(id).setIsAvailable(false); //repairerService.isAvailableById(id);
         }
     }
 
