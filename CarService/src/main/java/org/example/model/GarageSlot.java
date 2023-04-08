@@ -10,21 +10,25 @@ public class GarageSlot {
         garagesCount++;
         id = garagesCount;
     }
+
     public int getId() {
         return id;
     }
+
     public void setAvailable(boolean available) {
         isAvailable = available;
     }
+
     public boolean isAvailable() {
         return isAvailable;
     }
+
     @Override
     public String toString() {
-        return '\n'+
+        return '\n' +
                 "GarageSlot{" +
-                "id=" + id  + ","+
-                "isAvailable=" + isAvailable  +
+                "id=" + id + "," +
+                "isAvailable=" + isAvailable +
                 '}';
     }
 }

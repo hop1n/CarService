@@ -9,11 +9,11 @@ public interface OrderService {
 
     void removeOrder(int id);
 
-    void assignRepairer (Order order, int... id);
+    void assignRepairer(Order order, int... id);
 
-    void assignGarageSlot (Order order, int id);
+    void assignGarageSlot(Order order, int id);
 
-    void completeOrder (int id);
+    void completeOrder(int id);
 
     Order getOrderById(int id);
 

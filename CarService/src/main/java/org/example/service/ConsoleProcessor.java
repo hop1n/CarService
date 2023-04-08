@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.exceprions.RepairerNotFoundException;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -108,11 +109,10 @@ public class ConsoleProcessor {
             case "remove":
                 try {
                     repairerService.remove(Integer.parseInt(words[2]));
-                    System.out.printf("Repairer %s deleted successfully\n", words[2]);
+                } catch (RepairerNotFoundException e) {
+                    System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please enter repairer's ID number");
-                } catch (NumberFormatException e) {
-                    System.out.println("Incorrect repairer's ID number");
                 }
                 break;
             case "printlist":
@@ -189,7 +189,7 @@ public class ConsoleProcessor {
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
-                } catch (IllegalArgumentException e) {
+                } catch (RepairerNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Incorrect command: not enough arguments");

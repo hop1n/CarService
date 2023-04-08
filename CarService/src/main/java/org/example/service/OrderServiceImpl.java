@@ -16,7 +16,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final List<Order> orders = new ArrayList<>();
 
-    public OrderServiceImpl (RepairerServiceImpl repairerService, GarageService garageService){
+    public OrderServiceImpl(RepairerServiceImpl repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
     }
@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     public void assignRepairer(Order order, int... ids) {
         for (int id : ids) {
             order.addRepair(repairerService.getById(id));
-            repairerService.getById(id).setIsAvailable(false); //repairerService.isAvailableById(id);
+            repairerService.getById(id).setIsAvailable(false);
         }
     }
 
