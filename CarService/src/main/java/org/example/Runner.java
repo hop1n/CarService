@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.Service.ConsoleProcessor;
+import org.example.service.ConsoleProcessor;
 
 public class Runner {
     static ConsoleProcessor consoleProcessor = new ConsoleProcessor();
