@@ -247,6 +247,8 @@ public class ConsoleProcessor {
                     System.out.println("Incorrect command: not enough arguments");
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect Order ID number of Repairer ID number");
+                } catch (NullPointerException e) {
+                    System.out.println("Incorrect Order ID");
                 }
                 break;
 
@@ -257,6 +259,8 @@ public class ConsoleProcessor {
                     System.out.println("Please add \"ID\"");
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect order ID, please state actual number");
+                } catch (NullPointerException e) {
+                    System.out.println("Garage or repairer not assigned");
                 }
                 break;
 
