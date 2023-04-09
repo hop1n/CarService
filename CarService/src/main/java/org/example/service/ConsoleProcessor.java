@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -66,7 +65,7 @@ public class ConsoleProcessor {
                 System.out.println("=====");
                 System.out.println("Please enter command or type \"help\" for command list. Enter \"exit\" to exit:");
 
-                input = reader.readLine().toLowerCase().trim().replaceAll("[^\\da-zA-Zа-яёА-ЯЁ ]", "");
+                input = reader.readLine().toLowerCase().trim();
 
                 if (input.equals("exit")) {
                     break;
@@ -250,15 +249,17 @@ public class ConsoleProcessor {
                 try {
                     if (words[4].equals("repairer")) {
                         orderService.assignRepairer(orderService.getOrderById(Integer.parseInt(words[3])), Integer.parseInt(words[5]));
+                        System.out.printf("Repairer %d assigned to Order %d successfully", Integer.parseInt(words[5]), Integer.parseInt(words[3]));
                     } else if (words[4].equals("garage")) {
                         orderService.assignGarageSlot(orderService.getOrderById(Integer.parseInt(words[3])), Integer.parseInt(words[5]));
+                        System.out.printf("Garage %d assigned to Order %d successfully", Integer.parseInt(words[5]), Integer.parseInt(words[3]));
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
                 } catch (RepairerNotAvailableException | GarageNotAvailableException e) {
                     System.out.println(e.getMessage());
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect Order ID number or Repairer ID number");
+                    System.out.println("Incorrect Order, Garage or Repairer ID number");
                 } catch (NullPointerException e) {
                     System.out.println("Incorrect Order ID");
                 }
@@ -299,7 +300,7 @@ public class ConsoleProcessor {
     public static void getHelp(String[] words) {
         if (words.length < 2) {
             System.out.println("Command structure: \"object action arguments\"");
-            System.out.println("Objects: Repairer, Garage, Order, OrderList");
+            System.out.println("Objects: Repairer, Garage, Order");
             System.out.println("For object commands, print \"help object\", for example: \"help repairer\"\n");
         } else if (words[0].equals("help") && words[1].equals("repairer")) {
             System.out.printf("Object Repairer, actions:  add name, remove id, printlist\n" +
@@ -311,11 +312,6 @@ public class ConsoleProcessor {
                     "\tExample: Garage add\n" +
                     "\tExample: Garage remove 2\n" +
                     "\tExample: Garage printlist\n");
-        } else if (words[0].equals("help") && words[1].equals("orderlist")) {
-            System.out.printf("Object OrderList, actions:  add cost amount, get id number, printlist type number\n" +
-                    "\tExample: Orderlist add cost 100\n" +
-                    "\tExample: Orderlist get id 2\n" +
-                    "\tExample: Orderlist printlist type 2\n");
         } else if (words[0].equals("help") && words[1].equals("order")) {
             System.out.printf("Object Order, actions:  create cost amount, remove id number, assign repairer id number, get id number, printlist type number\n" +
                     "\tExample: Order create cost 100\n" +
@@ -323,7 +319,8 @@ public class ConsoleProcessor {
                     "\tExample: Order complete id 3\n" +
                     "\tExample: Order assign id 4 repairer 2\n" +
                     "\tExample: Order assign id 4 garage 2\n" +
-                    "\tExample: Garage printlist sort 2\n");
+                    "\tExample: Order get id 4\n" +
+                    "\tExample: Order printlist sort 1\n");
         } else {
             System.out.println("Unexpected value: "+words[1]);
         }
