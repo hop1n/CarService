@@ -1,4 +1,4 @@
-package org.example.Service;
+package org.example.service;
 
 import org.example.exceptions.GarageNotFoundException;
 import org.example.model.GarageSlot;
