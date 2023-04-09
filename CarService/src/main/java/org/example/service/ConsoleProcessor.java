@@ -60,7 +60,7 @@ public class ConsoleProcessor {
                 System.out.println("=====");
                 System.out.println("Please enter command or type \"help\" for command list. Enter \"exit\" to exit:");
 
-                input = reader.readLine().toLowerCase().trim().replaceAll("[^\\da-zA-Zа-яёА-ЯЁ ]", "");
+                input = reader.readLine().toLowerCase().trim();
 
                 if (input.equals("exit")) {
                     break;
@@ -193,10 +193,10 @@ public class ConsoleProcessor {
                     }
                 } catch (RepairerNotFoundException e) {
                     System.err.println(e.getMessage());
-                } catch (NumberFormatException e){
-                    System.out.println("Incorrect Order ID number or Repairer ID number");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Incorrect command: not enough arguments");
+                } catch (NumberFormatException e) {
+                    System.out.println("Incorrect Order, Garage or Repairer ID number");
                 } catch (NullPointerException e) {
                     System.out.println("Incorrect Order ID");
                 }
