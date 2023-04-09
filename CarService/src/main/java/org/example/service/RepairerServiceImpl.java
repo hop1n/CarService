@@ -7,18 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.example.constants.ExceptionMessage.INVALID_REPAIRER_ID;
+
 public class RepairerServiceImpl implements Service<Repairer> {
 
     private static int repairersCount;
-    private List<Repairer> repairers = new ArrayList<>();
+    private final List<Repairer> repairers = new ArrayList<>();
 
     public List<Repairer> getRepairers() {
         return repairers;
-    }
-
-    public void setRepairers(List<Repairer> repairersToSet) {
-        this.repairers = repairersToSet;
-        repairersCount = repairersToSet.size();
     }
 
     public Repairer getById(int id) {
@@ -26,7 +23,7 @@ public class RepairerServiceImpl implements Service<Repairer> {
         try {
             repairerToReturn = repairers.stream().filter(repairer -> repairer.getId() == id).collect(Collectors.toList()).get(0);
         } catch (IndexOutOfBoundsException e) {
-            throw new RepairerNotFoundException("there is no repairer with id=" + id);
+            throw new RepairerNotFoundException(INVALID_REPAIRER_ID + id);
         }
         return repairerToReturn;
     }
@@ -43,7 +40,7 @@ public class RepairerServiceImpl implements Service<Repairer> {
         boolean removeFlag;
         removeFlag = repairers.removeIf(repairer -> repairer.getId() == id);
         if (!removeFlag) {
-            throw new RepairerNotFoundException("invalid id");
+            throw new RepairerNotFoundException(INVALID_REPAIRER_ID + id);
         }
     }
 

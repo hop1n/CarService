@@ -150,7 +150,7 @@ public class ConsoleProcessor {
                 }
                 break;
             case "printlist":
-                garageService.showSorted();
+                System.out.println(garageService);
                 break;
             default:
                 System.out.println("Unexpected value: " + words[1]);
