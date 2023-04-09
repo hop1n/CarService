@@ -2,12 +2,11 @@ package org.example.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Order {
-
     private GarageSlot garageSlot;
-    private List<Repairer> repairers = new ArrayList<>();
+    private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
     private LocalDateTime creationDate;
@@ -23,7 +22,7 @@ public class Order {
         id = orderCount;
     }
 
-    public void addRepair(Repairer repairer){
+    public void addRepair(Repairer repairer) {
         repairers.add(repairer);
     }
 
@@ -35,11 +34,11 @@ public class Order {
         this.garageSlot = garageSlot;
     }
 
-    public List<Repairer> getRepairers() {
+    public Collection<Repairer> getRepairers() {
         return repairers;
     }
 
-    public void setRepairers(List<Repairer> repairers) {
+    public void setRepairers(Collection<Repairer> repairers) {
         this.repairers = repairers;
     }
 
@@ -81,16 +80,10 @@ public class Order {
 
     @Override
     public String toString() {
-
-        return '\n'+
-                "Order{" +
-                "id=" + id + ","+
-                "garageSlot=" + garageSlot + ","+
-                "repairers=" + repairers + ","+
-                "cost=" + cost + ","+
-                "inProgress=" + inProgress + ","+
-                "creationDate=" + creationDate + ","+
-                "completionDate=" + completionDate +
-                '}';
+        return '\n' + "Order{" +
+                "id=" + id + "," + "garageSlot=" + garageSlot + "," +
+                "repairers=" + repairers + "," + "cost=" + cost + "," +
+                "inProgress=" + inProgress + "," + "creationDate=" + creationDate + "," +
+                "completionDate=" + completionDate + '}';
     }
 }
