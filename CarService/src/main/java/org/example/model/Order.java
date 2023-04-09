@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class Order {
-
     private GarageSlot garageSlot;
     private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
@@ -82,16 +80,10 @@ public class Order {
 
     @Override
     public String toString() {
-
-        return '\n' +
-                "Order{" +
-                "id=" + id + "," +
-                "garageSlot=" + garageSlot + "," +
-                "repairers=" + repairers + "," +
-                "cost=" + cost + "," +
-                "inProgress=" + inProgress + "," +
-                "creationDate=" + creationDate + "," +
-                "completionDate=" + completionDate +
-                '}';
+        return '\n' + "Order{" +
+                "id=" + id + "," + "garageSlot=" + garageSlot + "," +
+                "repairers=" + repairers + "," + "cost=" + cost + "," +
+                "inProgress=" + inProgress + "," + "creationDate=" + creationDate + "," +
+                "completionDate=" + completionDate + '}';
     }
 }

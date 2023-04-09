@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -12,7 +13,7 @@ public class ConsoleProcessor {
 
     static RepairerServiceImpl repairerService = new RepairerServiceImpl();
     static GarageService garageService = new GarageService();
-    static OrderServiceImpl orderService = new OrderServiceImpl(repairerService, garageService);
+    static OrderService orderService = new OrderService(repairerService, garageService);
 
     //Initial database logs creation
     public void initLogs() {
@@ -49,7 +50,7 @@ public class ConsoleProcessor {
         orderService.completeOrder(order2.getId());
 
 
-        System.out.println(orderService.getSortedOrders(OrderServiceImpl.Fields.COST));
+        System.out.println(orderService.getOrders());
     }
 
     //Method for input processing
@@ -186,12 +187,18 @@ public class ConsoleProcessor {
                     System.out.println("Please add \"cost amount\"");
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect amount, please state a digit");
+                } catch (IllegalArgumentException e) {
+                        System.out.println("Incorrect amount, should be >= 0");
                 }
 
                 break;
 
             case "printlist":
-                System.out.println(orderService.getSortedOrders(OrderServiceImpl.Fields.valueOf(words[3])));
+                try {
+                    System.out.println(orderService.getSortedOrders((words[3])));
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
                 break;
 
             case "get":
@@ -221,16 +228,21 @@ public class ConsoleProcessor {
                     System.out.println("Please add \"cost amount\"");
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect cost, please state a digit");
+                }catch (IncorrectCostException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
 
             case "remove":
                 try {
                     orderService.removeOrder(Integer.parseInt(words[3]));
+                    System.out.println("Order with ID " + words[3] + " removed successfully");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"order ID\"");
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
+                    System.out.println("Incorrect order's ID number");
+                } catch (OrderNotFoundException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
 
@@ -243,10 +255,10 @@ public class ConsoleProcessor {
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Incorrect command: not enough arguments");
+                } catch (RepairerNotAvailableException | GarageNotAvailableException e) {
+                    System.out.println(e.getMessage());
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect Order ID number of Repairer ID number");
+                    System.out.println("Incorrect Order ID number or Repairer ID number");
                 } catch (NullPointerException e) {
                     System.out.println("Incorrect Order ID");
                 }
@@ -255,12 +267,13 @@ public class ConsoleProcessor {
             case "complete":
                 try {
                     orderService.completeOrder(Integer.parseInt(words[3]));
+                    System.out.printf("Order %s completed successfully\n", words[3]);
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"ID\"");
+                } catch (OrderNotFoundException | OrderAlreadyCompletedException e) {
+                    System.out.println(e.getMessage());
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
-                } catch (NullPointerException e) {
-                    System.out.println("Garage or repairer not assigned");
+                    System.out.println("Incorrect amount, please state a digit");
                 }
                 break;
 
@@ -270,7 +283,9 @@ public class ConsoleProcessor {
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"ID\"");
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
+                    System.out.println("Incorrect order's ID number");
+                } catch (OrderNotFoundException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
 
