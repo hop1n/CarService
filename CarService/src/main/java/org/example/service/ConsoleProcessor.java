@@ -70,7 +70,7 @@ public class ConsoleProcessor {
                 System.out.println("=====");
                 System.out.println("Please enter command or type \"help\" for command list. Enter \"exit\" to exit:");
 
-                input = reader.readLine().toLowerCase().trim().replaceAll("[^\\da-zA-Zа-яёА-ЯЁ ]", "");
+                input = reader.readLine().toLowerCase().trim();
 
                 if (input.equals("exit")) {
                     break;
@@ -85,9 +85,6 @@ public class ConsoleProcessor {
                             break;
                         case "garage":
                             processGarage(words);
-                            break;
-                        case "orderlist":
-                            processOrderList(words);
                             break;
                         case "order":
                             processOrder(words);
@@ -180,47 +177,6 @@ public class ConsoleProcessor {
         }
     }
 
-    //Method for OrderList type processing
-    public static void processOrderList(String[] words) {
-        switch (words[1]) {
-            case "add":
-                try {
-                    orderService.addOrder(new Order(Integer.parseInt(words[3])));
-                    System.out.println("New order created successfully");
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Please add \"cost amount\"");
-                } catch (NumberFormatException e) {
-                    System.out.println("Incorrect amount, please state a digit");
-                } catch (IllegalArgumentException e) {
-                        System.out.println("Incorrect amount, should be >= 0");
-                }
-
-                break;
-
-            case "printlist":
-                try {
-                    System.out.println(orderService.getSortedOrders((words[3])));
-                } catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-
-            case "get":
-                try {
-                    System.out.println(orderService.getOrderById(Integer.parseInt(words[3])));
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Please add \"order ID\"");
-                } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
-                }
-                break;
-
-            default:
-                System.out.println("Unexpected value: " + words[1]);
-                break;
-        }
-    }
-
     //Method for Order type processing
     public static void processOrder(String[] words) {
         switch (words[1]) {
@@ -254,15 +210,17 @@ public class ConsoleProcessor {
                 try {
                     if (words[4].equals("repairer")) {
                         orderService.assignRepairer(orderService.getOrderById(Integer.parseInt(words[3])), Integer.parseInt(words[5]));
+                        System.out.printf("Repairer %d assigned to Order %d successfully", Integer.parseInt(words[5]), Integer.parseInt(words[3]));
                     } else if (words[4].equals("garage")) {
                         orderService.assignGarageSlot(orderService.getOrderById(Integer.parseInt(words[3])), Integer.parseInt(words[5]));
+                        System.out.printf("Garage %d assigned to Order %d successfully", Integer.parseInt(words[5]), Integer.parseInt(words[3]));
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
                 } catch (RepairerNotAvailableException | GarageNotAvailableException e) {
                     System.out.println(e.getMessage());
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect Order ID number or Repairer ID number");
+                    System.out.println("Incorrect Order, Garage or Repairer ID number");
                 } catch (NullPointerException e) {
                     System.out.println("Incorrect Order ID");
                 }
@@ -293,6 +251,16 @@ public class ConsoleProcessor {
                 }
                 break;
 
+            case "printlist":
+                try {
+                    System.out.println(orderService.getSortedOrders(Integer.parseInt(words[3])));
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Please add \"type 1-5\"");
+                } catch (NumberFormatException e) {
+                    System.out.println("Incorrect sort type, please state actual number");
+                }
+                break;
+
             default:
                 System.out.println("Unexpected value: " + words[1]);
                 break;
@@ -303,7 +271,7 @@ public class ConsoleProcessor {
     public static void getHelp(String[] words) {
         if (words.length < 2) {
             System.out.println("Command structure: \"object action arguments\"");
-            System.out.println("Objects: Repairer, Garage, Order, OrderList");
+            System.out.println("Objects: Repairer, Garage, Order");
             System.out.println("For object commands, print \"help object\", for example: \"help repairer\"\n");
         } else if (words[0].equals("help") && words[1].equals("repairer")) {
             System.out.printf("Object Repairer, actions:  add name, remove id, printlist\n" +
@@ -315,11 +283,6 @@ public class ConsoleProcessor {
                     "\tExample: Garage add\n" +
                     "\tExample: Garage remove 2\n" +
                     "\tExample: Garage printlist\n");
-        } else if (words[0].equals("help") && words[1].equals("orderlist")) {
-            System.out.printf("Object OrderList, actions:  add cost amount, get id number, printlist type number\n" +
-                    "\tExample: Orderlist add cost 100\n" +
-                    "\tExample: Orderlist get id 2\n" +
-                    "\tExample: Orderlist printlist type 2\n");
         } else if (words[0].equals("help") && words[1].equals("order")) {
             System.out.printf("Object Order, actions:  create cost amount, remove id number, assign repairer id number, get id number, printlist type number\n" +
                     "\tExample: Order create cost 100\n" +
@@ -327,7 +290,8 @@ public class ConsoleProcessor {
                     "\tExample: Order complete id 3\n" +
                     "\tExample: Order assign id 4 repairer 2\n" +
                     "\tExample: Order assign id 4 garage 2\n" +
-                    "\tExample: Garage printlist sort 2\n");
+                    "\tExample: Order get id 4\n" +
+                    "\tExample: Order printlist sort 1\n");
         } else {
             System.out.println("Unexpected value: "+words[1]);
         }
