@@ -1,31 +1,26 @@
 package org.example.model;
 
 public class Repairer {
-    private static int repairersCount;
-    private final int id;
+    private int id;
     private final String name;
     private boolean isAvailable;
 
     public Repairer() {
         this.name = "";
-        repairersCount++;
-        id = repairersCount;
         isAvailable = true;
     }
 
     public Repairer(String name) {
         this.name = name;
-        repairersCount++;
-        id = repairersCount;
         isAvailable = true;
-    }
-
-    public static int getRepairersCount() {
-        return repairersCount;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isAvailable() {

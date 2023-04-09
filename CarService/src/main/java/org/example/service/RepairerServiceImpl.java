@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.exceprions.RepairerNotFoundException;
+import org.example.exception.RepairerNotFoundException;
 import org.example.model.Repairer;
 
 import java.util.ArrayList;
@@ -9,11 +9,16 @@ import java.util.stream.Collectors;
 
 public class RepairerServiceImpl implements Service<Repairer> {
 
-    private final List<Repairer> repairers = new ArrayList<>();
+    private static int repairersCount;
+    private List<Repairer> repairers = new ArrayList<>();
 
-    @Override
-    public void add(Repairer repairer) {
-        repairers.add(repairer);
+    public List<Repairer> getRepairers() {
+        return repairers;
+    }
+
+    public void setRepairers(List<Repairer> repairersToSet) {
+        this.repairers = repairersToSet;
+        repairersCount = repairersToSet.size();
     }
 
     public Repairer getById(int id) {
@@ -24,6 +29,13 @@ public class RepairerServiceImpl implements Service<Repairer> {
             throw new RepairerNotFoundException("there is no repairer with id=" + id);
         }
         return repairerToReturn;
+    }
+
+    @Override
+    public void add(Repairer repairer) {
+        repairersCount++;
+        repairers.add(repairer);
+        repairer.setId(repairersCount);
     }
 
     @Override

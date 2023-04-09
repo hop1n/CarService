@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.exceprions.RepairerNotFoundException;
+import org.example.exception.RepairerNotFoundException;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -193,6 +193,8 @@ public class ConsoleProcessor {
                     }
                 } catch (RepairerNotFoundException e) {
                     System.err.println(e.getMessage());
+                } catch (NumberFormatException e){
+                    System.out.println("Incorrect Order ID number or Repairer ID number");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Incorrect command: not enough arguments");
                 } catch (NullPointerException e) {
