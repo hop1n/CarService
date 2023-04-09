@@ -210,7 +210,7 @@ public class ConsoleProcessor {
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Incorrect command: not enough arguments");
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect Order ID number of Repairer ID number");
+                    System.out.println("Incorrect Order, Garage or Repairer ID number");
                 } catch (NullPointerException e) {
                     System.out.println("Incorrect Order ID");
                 }
