@@ -23,6 +23,10 @@ public class ConsoleProcessor {
         Repairer repairer1 = new Repairer("Tom");
         Repairer repairer2 = new Repairer("Alex");
         Repairer repairer3 = new Repairer("Jhon");
+        Order order1 = new Order(100);
+        Order order2 = new Order(100);
+        Order order3 = new Order(120);
+
 
 
         repairerService.add(repairer1);
@@ -35,16 +39,16 @@ public class ConsoleProcessor {
         garageService.add(garageSlot3);
 
 
-        Order order1 = orderService.createOrder(100);
+       orderService.addOrder(order1);
         orderService.assignRepairer(order1, repairer1.getId());
         orderService.assignGarageSlot(order1, garageSlot1.getId());
 
-        Order order3 = orderService.createOrder(100);
+        orderService.addOrder(order2);
         orderService.assignRepairer(order3, repairer3.getId());
         orderService.assignGarageSlot(order3, garageSlot3.getId());
 
 //        Order order2 = orderService.createOrder(100,garageSlot1.getId());
-        Order order2 = orderService.createOrder(120);
+        orderService.addOrder(order3);
         orderService.assignRepairer(order2, repairer2.getId());
         orderService.assignGarageSlot(order2, garageSlot2.getId());
         orderService.completeOrder(order2.getId());
@@ -181,7 +185,7 @@ public class ConsoleProcessor {
         switch (words[1]) {
             case "add":
                 try {
-                    orderService.createOrder(Integer.parseInt(words[3]));
+                    orderService.addOrder(new Order(Integer.parseInt(words[3])));
                     System.out.println("New order created successfully");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"cost amount\"");
@@ -222,7 +226,7 @@ public class ConsoleProcessor {
         switch (words[1]) {
             case "create":
                 try {
-                    orderService.createOrder(Integer.parseInt(words[3]));
+                    orderService.addOrder(new Order(Integer.parseInt(words[3])));
                     System.out.println("New order created successfully");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"cost amount\"");

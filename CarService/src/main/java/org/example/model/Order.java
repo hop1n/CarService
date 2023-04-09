@@ -11,15 +11,17 @@ public class Order {
     private boolean inProgress;
     private LocalDateTime creationDate;
     private LocalDateTime completionDate;
-    private static int orderCount;
-    private final int id;
+    private  int id;
+
+    public Order() {
+        this.creationDate = LocalDateTime.now();
+        this.inProgress = true;
+    }
 
     public Order(int cost) {
         this.cost = cost;
         this.creationDate = LocalDateTime.now();
         this.inProgress = true;
-        orderCount++;
-        id = orderCount;
     }
 
     public void addRepair(Repairer repairer) {
@@ -76,6 +78,10 @@ public class Order {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
