@@ -65,7 +65,7 @@ public class ConsoleProcessor {
                 System.out.println("=====");
                 System.out.println("Please enter command or type \"help\" for command list. Enter \"exit\" to exit:");
 
-                input = reader.readLine().toLowerCase().trim().replaceAll("[^\\da-zA-Zа-яёА-ЯЁ ]", "");
+                input = reader.readLine().toLowerCase().trim();
 
                 if (input.equals("exit")) {
                     break;
