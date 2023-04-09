@@ -48,11 +48,6 @@ public class RepairerServiceImpl implements Service<Repairer> {
     }
 
     @Override
-    public void sort() {
-        repairers.sort(Comparator.comparing(Repairer::getName));
-    }
-
-    @Override
     public String toString() {
         return repairers.toString();
     }
