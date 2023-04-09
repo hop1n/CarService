@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -256,7 +257,7 @@ public class ConsoleProcessor {
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
-                } catch (RepairerNotAvailableException | GarageNotAvailableException e) {
+                } catch (RepairerNotAvailableException | GarageNotAvailableException | OrderNotFoundException e) {
                     System.out.println(e.getMessage());
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect Order, Garage or Repairer ID number");
