@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,18 +10,19 @@ public class Order {
     private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
-    private LocalDateTime creationDate;
-    private LocalDateTime completionDate;
+    private LocalDate creationDate;
+    private LocalDate completionDate;
     private  int id;
 
     public Order() {
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = LocalDate.now();
         this.inProgress = true;
+
     }
 
     public Order(int cost) {
         this.cost = cost;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = LocalDate.now();
         this.inProgress = true;
     }
 
@@ -60,19 +62,19 @@ public class Order {
         this.inProgress = inProgress;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getCompletionDate() {
+    public LocalDate getCompletionDate() {
         return completionDate;
     }
 
-    public void setCompletionDate(LocalDateTime completionDate) {
+    public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = completionDate;
     }
 

@@ -4,6 +4,7 @@ import org.example.exception.*;
 import org.example.model.Order;
 import org.example.model.Repairer;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private static int orderCount;
+
     enum Fields {
         CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIRER;
 
@@ -29,6 +31,7 @@ public class OrderService {
     public OrderService(RepairerServiceImpl repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
+        orderCount = 0;
     }
 
     public void addOrder(Order order) {
@@ -75,7 +78,7 @@ public class OrderService {
             repairer.setIsAvailable(true);
         }
         order.getGarageSlot().setAvailable(true);
-        order.setCompletionDate(LocalDateTime.now());
+        order.setCompletionDate(LocalDate.now());
     }
 
     public Order getOrderById(int id) {
@@ -88,8 +91,8 @@ public class OrderService {
     }
 
     public List<Order> getSortedOrders(String field) {
-        if (Fields.checkValue(field.toUpperCase()) == null) {
-            throw new NullPointerException("Incorrect sort type: " + field);
+        if (Fields.checkValue(field) == null) {
+            throw new IncorrectSortTypeException("There is no sort type: " + field);
         }
         switch (Fields.valueOf(field.toUpperCase())) {
             case CREATION:

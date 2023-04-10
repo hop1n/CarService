@@ -253,7 +253,7 @@ public class ConsoleProcessor {
 
             case "printlist":
                 try {
-                    System.out.println(orderService.getSortedOrders(Integer.parseInt(words[3])));
+                    System.out.println(orderService.getSortedOrders(words[3]));
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"type 1-5\"");
                 } catch (NumberFormatException e) {
