@@ -7,6 +7,7 @@ public class GarageSlot {
     public GarageSlot() {
         isAvailable = true;
     }
+
     public int getId() {
         return id;
     }

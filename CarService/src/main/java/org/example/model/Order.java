@@ -23,7 +23,7 @@ public class Order {
         id = orderCount;
     }
 
-    public void addRepair(Repairer repairer){
+    public void addRepair(Repairer repairer) {
         repairers.add(repairer);
     }
 
@@ -82,14 +82,14 @@ public class Order {
     @Override
     public String toString() {
 
-        return '\n'+
+        return '\n' +
                 "Order{" +
-                "id=" + id + ","+
-                "garageSlot=" + garageSlot + ","+
-                "repairers=" + repairers + ","+
-                "cost=" + cost + ","+
-                "inProgress=" + inProgress + ","+
-                "creationDate=" + creationDate + ","+
+                "id=" + id + "," +
+                "garageSlot=" + garageSlot + "," +
+                "repairers=" + repairers + "," +
+                "cost=" + cost + "," +
+                "inProgress=" + inProgress + "," +
+                "creationDate=" + creationDate + "," +
                 "completionDate=" + completionDate +
                 '}';
     }
