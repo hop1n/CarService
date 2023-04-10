@@ -1,7 +1,6 @@
 package org.example.service;
 
-import org.example.exception.GarageNotFoundException;
-import org.example.exception.RepairerNotFoundException;
+import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -15,7 +14,7 @@ public class ConsoleProcessor {
 
     static RepairerServiceImpl repairerService = new RepairerServiceImpl();
     static GarageService garageService = new GarageService();
-    static OrderServiceImpl orderService = new OrderServiceImpl(repairerService, garageService);
+    static OrderService orderService = new OrderService(repairerService, garageService);
 
     public void initLogs() {
         GarageSlot garageSlot1 = new GarageSlot();
@@ -24,6 +23,10 @@ public class ConsoleProcessor {
         Repairer repairer1 = new Repairer("Tom");
         Repairer repairer2 = new Repairer("Alex");
         Repairer repairer3 = new Repairer("Jhon");
+        Order order1 = new Order(100);
+        Order order2 = new Order(100);
+        Order order3 = new Order(120);
+
 
         repairerService.add(repairer1);
         repairerService.add(repairer3);
@@ -32,23 +35,24 @@ public class ConsoleProcessor {
         garageService.add(garageSlot1);
         garageService.add(garageSlot2);
         garageService.add(garageSlot3);
-        try {
-            Order order1 = orderService.createOrder(100);
-            orderService.assignRepairer(order1, repairer1.getId());
-            orderService.assignGarageSlot(order1, garageSlot1.getId());
 
-            Order order3 = orderService.createOrder(100);
-            orderService.assignRepairer(order3, repairer3.getId());
-            orderService.assignGarageSlot(order3, garageSlot3.getId());
 
-            Order order2 = orderService.createOrder(120);
-            orderService.assignRepairer(order2, repairer2.getId());
-            orderService.assignGarageSlot(order2, garageSlot2.getId());
-            orderService.completeOrder(order2.getId());
-        } catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-        }
-        System.out.println(orderService.getSortedOrders(5));
+       orderService.addOrder(order1);
+        orderService.assignRepairer(order1, repairer1.getId());
+        orderService.assignGarageSlot(order1, garageSlot1.getId());
+
+        orderService.addOrder(order2);
+        orderService.assignRepairer(order3, repairer3.getId());
+        orderService.assignGarageSlot(order3, garageSlot3.getId());
+
+//        Order order2 = orderService.createOrder(100,garageSlot1.getId());
+        orderService.addOrder(order3);
+        orderService.assignRepairer(order2, repairer2.getId());
+        orderService.assignGarageSlot(order2, garageSlot2.getId());
+        orderService.completeOrder(order2.getId());
+
+
+        System.out.println(orderService.getOrders());
     }
 
     //Method for input processing
@@ -166,21 +170,26 @@ public class ConsoleProcessor {
         switch (words[1]) {
             case "create":
                 try {
-                    orderService.createOrder(Integer.parseInt(words[3]));
+                    orderService.addOrder(new Order(Integer.parseInt(words[3])));
                     System.out.println("New order created successfully");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"cost amount\"");
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect cost, please state a digit");
+                }catch (IncorrectCostException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
             case "remove":
                 try {
                     orderService.removeOrder(Integer.parseInt(words[3]));
+                    System.out.println("Order with ID " + words[3] + " removed successfully");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"order ID\"");
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
+                    System.out.println("Incorrect order's ID number");
+                } catch (OrderNotFoundException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
             case "assign":
@@ -209,12 +218,13 @@ public class ConsoleProcessor {
             case "complete":
                 try {
                     orderService.completeOrder(Integer.parseInt(words[3]));
+                    System.out.printf("Order %s completed successfully\n", words[3]);
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"ID\"");
+                } catch (OrderNotFoundException | OrderAlreadyCompletedException e) {
+                    System.out.println(e.getMessage());
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
-                } catch (NullPointerException e) {
-                    System.out.println("Garage or repairer not assigned");
+                    System.out.println("Incorrect amount, please state a digit");
                 }
                 break;
             case "get":
@@ -223,13 +233,15 @@ public class ConsoleProcessor {
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"ID\"");
                 } catch (NumberFormatException e) {
-                    System.out.println("Incorrect order ID, please state actual number");
+                    System.out.println("Incorrect order's ID number");
+                } catch (OrderNotFoundException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
 
             case "printlist":
                 try {
-                    System.out.println(orderService.getSortedOrders(Integer.parseInt(words[3])));
+                    System.out.println(orderService.getSortedOrders(words[3]));
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please add \"type 1-5\"");
                 } catch (NumberFormatException e) {

@@ -1,26 +1,29 @@
 package org.example.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Order {
-
     private GarageSlot garageSlot;
-    private List<Repairer> repairers = new ArrayList<>();
+    private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
-    private LocalDateTime creationDate;
-    private LocalDateTime completionDate;
-    private static int orderCount;
-    private final int id;
+    private LocalDate creationDate;
+    private LocalDate completionDate;
+    private  int id;
+
+    public Order() {
+        this.creationDate = LocalDate.now();
+        this.inProgress = true;
+
+    }
 
     public Order(int cost) {
         this.cost = cost;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = LocalDate.now();
         this.inProgress = true;
-        orderCount++;
-        id = orderCount;
     }
 
     public void addRepair(Repairer repairer) {
@@ -35,11 +38,11 @@ public class Order {
         this.garageSlot = garageSlot;
     }
 
-    public List<Repairer> getRepairers() {
+    public Collection<Repairer> getRepairers() {
         return repairers;
     }
 
-    public void setRepairers(List<Repairer> repairers) {
+    public void setRepairers(Collection<Repairer> repairers) {
         this.repairers = repairers;
     }
 
@@ -59,19 +62,19 @@ public class Order {
         this.inProgress = inProgress;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getCompletionDate() {
+    public LocalDate getCompletionDate() {
         return completionDate;
     }
 
-    public void setCompletionDate(LocalDateTime completionDate) {
+    public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = completionDate;
     }
 
@@ -79,18 +82,16 @@ public class Order {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
-
-        return '\n' +
-                "Order{" +
-                "id=" + id + "," +
-                "garageSlot=" + garageSlot + "," +
-                "repairers=" + repairers + "," +
-                "cost=" + cost + "," +
-                "inProgress=" + inProgress + "," +
-                "creationDate=" + creationDate + "," +
-                "completionDate=" + completionDate +
-                '}';
+        return '\n' + "Order{" +
+                "id=" + id + "," + "garageSlot=" + garageSlot + "," +
+                "repairers=" + repairers + "," + "cost=" + cost + "," +
+                "inProgress=" + inProgress + "," + "creationDate=" + creationDate + "," +
+                "completionDate=" + completionDate + '}';
     }
 }
