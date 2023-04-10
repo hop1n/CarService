@@ -16,14 +16,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final List<Order> orders = new ArrayList<>();
 
-    public OrderServiceImpl (RepairerServiceImpl repairerService, GarageService garageService){
+    public OrderServiceImpl(RepairerServiceImpl repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
     }
 
     @Override
     public Order createOrder(int cost) {
-//        GarageSlot garageSlot = garageService.getById(garageSlotId);
         Order order = new Order(cost);
         orders.add(order);
         return order;
