@@ -1,7 +1,6 @@
 package org.example.service;
 
-import org.example.exception.IncorrectSortTypeException;
-import org.example.exception.OrderNotFoundException;
+import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
@@ -25,7 +24,9 @@ public class OrderServiceTest {
     private static final Repairer REPAIRER2 = new Repairer("Ivan");
     private static final Repairer REPAIRER3 = new Repairer("Kolya");
     private static final Repairer REPAIRER4 = new Repairer("Sasha");
+    private static final Repairer REPAIRER5 = new Repairer("Olya");
     private static final GarageSlot GARAGE_SLOT = new GarageSlot();
+    private static final GarageSlot GARAGE_SLOT1 = new GarageSlot();
 
 
     private RepairerServiceImpl repairerService;
@@ -77,11 +78,27 @@ public class OrderServiceTest {
     }
 
     @Test
-    void assignGarageSlot() {
+    void assignGarageSlotTest() {
         garageService.add(GARAGE_SLOT);
         orderService.assignGarageSlot(ORDER3, GARAGE_SLOT.getId());
 
         assertThat(orderService.getOrders().get(ORDER3.getId() - 1).getGarageSlot()).isEqualTo(GARAGE_SLOT);
+    }
+
+    @Test
+    void assignGarageSlotExcTest(){
+        garageService.add(GARAGE_SLOT1);
+        GARAGE_SLOT1.setAvailable(false);
+        assertThrows(GarageNotAvailableException.class, () -> orderService.assignGarageSlot(ORDER2,
+                GARAGE_SLOT1.getId()));
+    }
+
+    @Test
+    void assignRepairerExcTest(){
+        repairerService.add(REPAIRER5);
+        REPAIRER5.setIsAvailable(false);
+        assertThrows(RepairerNotAvailableException.class, () -> orderService.assignRepairer(ORDER2,
+                REPAIRER5.getId()));
     }
 
     @Test
@@ -95,6 +112,17 @@ public class OrderServiceTest {
         assertTrue(ORDER2.getRepairers().stream().allMatch(Repairer::isAvailable));
     }
 
+    @Test
+    void addOrderExcTest() {
+        Order order = new Order(-1);
+        assertThrows(IncorrectCostException.class, () -> orderService.addOrder(order));
+    }
+
+    @Test
+    void completeOrderExcTest() {
+        ORDER1.setInProgress(false);
+        assertThrows(OrderAlreadyCompletedException.class, () -> orderService.completeOrder(ORDER1.getId()));
+    }
 
     @Test
     void getSortedOrders() {
