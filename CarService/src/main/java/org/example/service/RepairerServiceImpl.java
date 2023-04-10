@@ -4,7 +4,7 @@ import org.example.exception.RepairerNotFoundException;
 import org.example.model.Repairer;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 import static org.example.constants.ExceptionMessage.INVALID_REPAIRER_ID;
@@ -12,9 +12,13 @@ import static org.example.constants.ExceptionMessage.INVALID_REPAIRER_ID;
 public class RepairerServiceImpl implements Service<Repairer> {
 
     private static int repairersCount;
-    private final List<Repairer> repairers = new ArrayList<>();
+    private final Collection<Repairer> repairers = new ArrayList<>();
 
-    public List<Repairer> getRepairers() {
+    public RepairerServiceImpl() {
+        repairersCount = 0;
+    }
+
+    public Collection<Repairer> getRepairers() {
         return repairers;
     }
 
