@@ -15,6 +15,10 @@ public class GarageService implements Service<GarageSlot> {
         return garageSlots;
     }
 
+    public GarageService() {
+        garageCount = 0;
+    }
+
     public void setGarageSlots(List<GarageSlot> garageSlots) {
         garageCount=garageSlots.size();
         this.garageSlots = garageSlots;

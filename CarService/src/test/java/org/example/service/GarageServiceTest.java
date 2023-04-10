@@ -11,21 +11,18 @@ import java.util.List;
 
 
 public class GarageServiceTest {
-    GarageService garageService = new GarageService();
+    private GarageService garageService;
     List<GarageSlot> garageSlots = new ArrayList<>();
     GarageSlot garageSlot1 = new GarageSlot();
     GarageSlot garageSlot2 = new GarageSlot();
     GarageSlot garageSlot3 = new GarageSlot();
     @BeforeEach
     public void setUp(){
-        garageSlot1.setId(1);
-        garageSlots.add(garageSlot1);
-        garageSlot2.setId(2);
+        garageService = new GarageService();
         garageSlot2.setAvailable(false);
-        garageSlots.add(garageSlot2);
-        garageSlot3.setId(3);
-        garageSlots.add(garageSlot3);
-        garageService.setGarageSlots(garageSlots);
+        garageService.add(garageSlot1);
+        garageService.add(garageSlot2);
+        garageService.add(garageSlot3);
     }
 
     @Test
