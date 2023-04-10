@@ -19,11 +19,6 @@ public class GarageService implements Service<GarageSlot> {
         garageCount = 0;
     }
 
-    public void setGarageSlots(List<GarageSlot> garageSlots) {
-        garageCount=garageSlots.size();
-        this.garageSlots = garageSlots;
-    }
-
     @Override
     public void add(GarageSlot garageSlot) {
         garageCount++;
