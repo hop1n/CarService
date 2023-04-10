@@ -4,14 +4,15 @@ import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -86,7 +87,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    void assignGarageSlotExcTest(){
+    void assignGarageSlotExcTest() {
         garageService.add(GARAGE_SLOT1);
         GARAGE_SLOT1.setAvailable(false);
         assertThrows(GarageNotAvailableException.class, () -> orderService.assignGarageSlot(ORDER2,
@@ -94,7 +95,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    void assignRepairerExcTest(){
+    void assignRepairerExcTest() {
         repairerService.add(REPAIRER5);
         REPAIRER5.setIsAvailable(false);
         assertThrows(RepairerNotAvailableException.class, () -> orderService.assignRepairer(ORDER2,
@@ -141,7 +142,7 @@ public class OrderServiceTest {
 
         assertAll(
                 () -> {
-                    List<Order> ordersSorted = new ArrayList<>();
+                    List<Order> ordersSorted;
                     ordersSorted = orderService.getSortedOrders("FINISHED");
 
                     assertThat(ordersSorted.toString()).isEqualTo("[\n" +
