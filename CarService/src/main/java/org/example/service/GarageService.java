@@ -1,54 +1,60 @@
 package org.example.service;
 
+import org.example.exception.GarageNotFoundException;
 import org.example.model.GarageSlot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 public class GarageService implements Service<GarageSlot> {
-
-    private final List<GarageSlot> garageSlots = new ArrayList<>();
+    public static int garageCount;
+    private List<GarageSlot> garageSlots = new ArrayList<>();
 
     public List<GarageSlot> getGarageSlots() {
         return garageSlots;
     }
 
+    public GarageService() {
+        garageCount = 0;
+    }
+
+    public void setGarageSlots(List<GarageSlot> garageSlots) {
+        garageCount=garageSlots.size();
+        this.garageSlots = garageSlots;
+    }
+
     @Override
     public void add(GarageSlot garageSlot) {
-        this.garageSlots.add(garageSlot);
+        garageCount++;
+        garageSlots.add(garageSlot);
+        garageSlot.setId(garageCount);
     }
 
     @Override
     public void remove(int id) {
-        garageSlots.removeIf(slot -> slot.getId() == id);
+        boolean isRemoved;
+        isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
+        if (!isRemoved){
+            throw new GarageNotFoundException("Garage with such id not found");
+        }
     }
 
     @Override
-    public GarageSlot getById(int id) {
-        return garageSlots.stream().filter(slot -> slot.getId() == id).collect(Collectors.toList()).get(0);
+    public GarageSlot getById(int id){
+        GarageSlot garageToReturn;
+        try {
+            garageToReturn = garageSlots.stream().filter(slot -> slot.getId() == id).findFirst().get();
+        } catch (NoSuchElementException e){
+            throw new GarageNotFoundException("Garage with such id not found");
+        }
+        return garageToReturn;
     }
 
-    public void showAvailableSlots() {
-        List<GarageSlot> availableGarageSlots = garageSlots.stream().filter(GarageSlot::isAvailable).collect(Collectors.toList());
-        System.out.println(availableGarageSlots);
-    }
-
-    public void showSorted() {
-        List<GarageSlot> sortedGarageSlots = new ArrayList<>(this.garageSlots);
-        sortedGarageSlots.sort((s1, s2) -> Boolean.compare(s2.isAvailable(), s1.isAvailable()));
-        System.out.println(sortedGarageSlots);
-    }
-
-    public void unAvailable(int id) {
-        garageSlots.stream().filter(slot -> slot.getId() == id).collect(Collectors.toList()).get(0).setAvailable(false);
-    }
-
-    public void available(int id) {
-        garageSlots.stream().filter(slot -> slot.getId() == id).collect(Collectors.toList()).get(0).setAvailable(true);
-    }
-
-    public boolean isAvailable(int id) {
-        return garageSlots.stream().filter(slot -> slot.getId() == id).collect(Collectors.toList()).get(0).isAvailable();
+    @Override
+    public String toString() {
+        return "GarageService{" +
+                "garageSlots=" + garageSlots +
+                '}';
     }
 }

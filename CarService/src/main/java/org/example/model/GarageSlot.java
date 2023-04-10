@@ -1,18 +1,19 @@
 package org.example.model;
 
 public class GarageSlot {
-    private static int garagesCount;
-    private final int id;
+    private int id;
     private boolean isAvailable;
 
     public GarageSlot() {
         isAvailable = true;
-        garagesCount++;
-        id = garagesCount;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setAvailable(boolean available) {
@@ -25,10 +26,10 @@ public class GarageSlot {
 
     @Override
     public String toString() {
-        return '\n' +
+        return '\n'+
                 "GarageSlot{" +
-                "id=" + id + "," +
-                "isAvailable=" + isAvailable +
+                "id=" + id  + ","+
+                "isAvailable=" + isAvailable  +
                 '}';
     }
 }

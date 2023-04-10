@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.exception.GarageNotFoundException;
 import org.example.exception.RepairerNotFoundException;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
@@ -143,6 +144,8 @@ public class ConsoleProcessor {
                             Integer.parseInt(words[2]),
                             garageService.getGarageSlots().size()
                     );
+                } catch (GarageNotFoundException e) {
+                    System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Please enter garage number");
                 } catch (NumberFormatException e) {
@@ -191,6 +194,8 @@ public class ConsoleProcessor {
                     } else {
                         System.out.println("Cannot recognize assignment");
                     }
+                } catch (GarageNotFoundException e) {
+                    System.err.println(e.getMessage());
                 } catch (RepairerNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
