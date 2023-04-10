@@ -1,7 +1,7 @@
 # CarService
 # What is it?
 
-This is a reference project for Java intensive course.
+This is a project for Java intensive course.
 
 ## Required capabilities
 
