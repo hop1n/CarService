@@ -16,6 +16,7 @@ public class GarageService implements Service<GarageSlot> {
     }
 
     public void setGarageSlots(List<GarageSlot> garageSlots) {
+        garageCount=garageSlots.size();
         this.garageSlots = garageSlots;
     }
 
@@ -46,10 +47,10 @@ public class GarageService implements Service<GarageSlot> {
         return garageToReturn;
     }
 
-    public List<GarageSlot> showSorted() {
-        List<GarageSlot> sortedGarageSlots = new ArrayList<>(this.garageSlots);
-        sortedGarageSlots.sort((s1,s2) -> Boolean.compare(s2.isAvailable(), s1.isAvailable()));
-        return sortedGarageSlots;
+    @Override
+    public String toString() {
+        return "GarageService{" +
+                "garageSlots=" + garageSlots +
+                '}';
     }
-
 }
