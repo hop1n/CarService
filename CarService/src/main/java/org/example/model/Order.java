@@ -1,7 +1,6 @@
 package org.example.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +11,7 @@ public class Order {
     private boolean inProgress;
     private LocalDate creationDate;
     private LocalDate completionDate;
-    private  int id;
+    private int id;
 
     public Order() {
         this.creationDate = LocalDate.now();

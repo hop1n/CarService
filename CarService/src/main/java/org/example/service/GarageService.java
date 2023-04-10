@@ -30,17 +30,17 @@ public class GarageService implements Service<GarageSlot> {
     public void remove(int id) {
         boolean isRemoved;
         isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
-        if (!isRemoved){
+        if (!isRemoved) {
             throw new GarageNotFoundException("Garage with such id not found");
         }
     }
 
     @Override
-    public GarageSlot getById(int id){
+    public GarageSlot getById(int id) {
         GarageSlot garageToReturn;
         try {
             garageToReturn = garageSlots.stream().filter(slot -> slot.getId() == id).findFirst().get();
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             throw new GarageNotFoundException("Garage with such id not found");
         }
         return garageToReturn;

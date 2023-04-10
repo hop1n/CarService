@@ -6,13 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class GarageServiceTest {
     private GarageService garageService;
-    List<GarageSlot> garageSlots = new ArrayList<>();
     GarageSlot garageSlot1 = new GarageSlot();
     GarageSlot garageSlot2 = new GarageSlot();
     GarageSlot garageSlot3 = new GarageSlot();
