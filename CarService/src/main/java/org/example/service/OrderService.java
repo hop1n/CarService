@@ -2,39 +2,21 @@ package org.example.service;
 
 import org.example.exception.*;
 import org.example.model.Order;
-import org.example.model.Repairer;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
-public class OrderService {
-    enum Fields {
-        CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIRER;
+public interface OrderService {
+    Order createOrder(int cost);
 
-        public static Fields checkValue(String field) {
-            return Arrays.stream(Fields.values())
-                    .filter(e -> e.name().equals(field))
-                    .findFirst()
-                    .orElse(null);
-        }
-    }
+    void removeOrder(int id);
 
     private final RepairerServiceImpl repairerService;
     private final GarageService garageService;
     private final List<Order> orders = new ArrayList<>();
 
-    public OrderService(RepairerServiceImpl repairerService, GarageService garageService) {
-        this.repairerService = repairerService;
-        this.garageService = garageService;
-    }
+    void assignGarageSlot (Order order, int id);
 
-    public Order createOrder(int cost) {
-        if (cost < 0) throw new IncorrectCostException("Cost shouldn't be less then 0");
-        Order order = new Order(cost);
-        orders.add(order);
-        return order;
-    }
+    void completeOrder (int id);
 
     public void removeOrder(int id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
@@ -73,7 +55,7 @@ public class OrderService {
             repairer.setIsAvailable(true);
         }
         order.getGarageSlot().setAvailable(true);
-        order.setCompletionDate(LocalDateTime.now());
+        order.setCompletionDate(LocalDate.now());
     }
 
     public Order getOrderById(int id) {
@@ -86,8 +68,8 @@ public class OrderService {
     }
 
     public List<Order> getSortedOrders(String field) {
-        if (Fields.checkValue(field.toUpperCase()) == null) {
-            throw new IllegalArgumentException("Incorrect sort type: " + field);
+        if (Fields.checkValue(field) == null) {
+            throw new IncorrectSortTypeException("There is no sort type: " + field);
         }
         switch (Fields.valueOf(field.toUpperCase())) {
             case CREATION:
