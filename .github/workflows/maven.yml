@@ -31,3 +31,5 @@ jobs:
       run : |
         cd CarService/target
         ls -a
+    - name: Step 5 - Running tests
+      run: mvn --batch-mode --update-snapshots verify
