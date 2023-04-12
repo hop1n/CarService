@@ -32,4 +32,4 @@ jobs:
         cd CarService/target
         ls -a
     - name: Step 5 - Running tests
-      run: mvn --batch-mode --update-snapshots verify -f CarService/pom.xml  mvn '-Dtest=com.example.*service' test
+      run: mvn --batch-mode --update-snapshots verify -f CarService/pom.xml
