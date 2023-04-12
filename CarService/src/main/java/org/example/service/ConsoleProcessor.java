@@ -8,7 +8,6 @@ import org.example.model.Repairer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.NoSuchElementException;
 
 public class ConsoleProcessor {
 
@@ -105,8 +104,12 @@ public class ConsoleProcessor {
                 //Checking for empty name
                 try {
                     String repairerName = words[2].substring(0, 1).toUpperCase() + words[2].substring(1);
-                    repairerService.add(new Repairer(repairerName));
+                    Repairer repairer = new Repairer(repairerName);
+                    repairerService.add(repairer);
+                    repairerService.writeToFile(repairer);
                     System.out.printf("New repairer %s added successfully\n", repairerName);
+                } catch (FileNotFoundException e){
+                    System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add repairer's name");
                 }
