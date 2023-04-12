@@ -25,11 +25,11 @@ jobs:
         cache: maven
         
     - name: Step 3 - Build with Maven
-      run: mvn -B package --file CarService/pom.xml  mvn '-Dtest=org.example.*service' test
+      run: mvn -B package --file CarService/pom.xml
 
     - name : Step 4 - Check target folder
       run : |
         cd CarService/target
         ls -a
     - name: Step 5 - Running tests
-      run: mvn --batch-mode --update-snapshots verify -f CarService/pom.xml
+      run: mvn --batch-mode --update-snapshots verify -f CarService/pom.xml  mvn '-Dtest=com.example.*service' test
