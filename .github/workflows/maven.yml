@@ -23,8 +23,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Setting pom.xml
+      run: mvn -f /home/runner/work/CarService/CarService/pom.xml
     - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots /home/runner/work/CarService/CarService/pom.xml
+      run: mvn --batch-mode --update-snapshots package
     - name: Run the Maven verify phase
       run: mvn --batch-mode --update-snapshots verify
     - run: mkdir staging && cp target/*.jar staging
