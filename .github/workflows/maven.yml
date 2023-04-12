@@ -24,7 +24,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Setting pom.xml
-      run: mvn -f CarService/CarService/pom.xml
+      run: mvn -f pom.xml
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots package
     - name: Run the Maven verify phase
