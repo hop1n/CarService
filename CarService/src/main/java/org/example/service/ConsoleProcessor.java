@@ -243,11 +243,9 @@ public class ConsoleProcessor {
 
             case "printlist":
                 try {
-                    System.out.println(orderService.getSortedOrders(words[3]));
-                } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"type 1-5\"");
-                } catch (NumberFormatException e) {
-                    System.err.println("Incorrect sort type, please state actual number");
+                    System.out.println(orderService.getSortedOrders(words[3].toUpperCase()));
+                } catch (IncorrectSortTypeException e) {
+                    System.err.println(e.getMessage());
                 }
                 break;
 
