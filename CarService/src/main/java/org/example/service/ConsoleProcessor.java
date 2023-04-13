@@ -8,7 +8,6 @@ import org.example.model.Repairer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.NoSuchElementException;
 
 public class ConsoleProcessor {
 
@@ -16,7 +15,6 @@ public class ConsoleProcessor {
     static GarageService garageService = new GarageService();
     static OrderService orderService = new OrderService(repairerService, garageService);
 
-    //Initial database logs creation
     public void initLogs() {
         GarageSlot garageSlot1 = new GarageSlot();
         GarageSlot garageSlot2 = new GarageSlot();
@@ -209,7 +207,7 @@ public class ConsoleProcessor {
                         System.out.println("Cannot recognize assignment");
                     }
                 } catch (GarageNotAvailableException | RepairerNotAvailableException | GarageNotFoundException |
-                         RepairerNotFoundException e) {
+                        RepairerNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Incorrect command: not enough arguments");

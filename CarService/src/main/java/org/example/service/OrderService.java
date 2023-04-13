@@ -2,21 +2,43 @@ package org.example.service;
 
 import org.example.exception.*;
 import org.example.model.Order;
+import org.example.model.Repairer;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public interface OrderService {
-    Order createOrder(int cost);
+public class OrderService {
 
-    void removeOrder(int id);
+    private static int orderCount;
+
+    enum Fields {
+        CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIRER;
+
+        public static Fields checkValue(String field) {
+            return Arrays.stream(Fields.values())
+                    .filter(e -> e.name().equals(field))
+                    .findFirst()
+                    .orElse(null);
+        }
+    }
 
     private final RepairerServiceImpl repairerService;
     private final GarageService garageService;
     private final List<Order> orders = new ArrayList<>();
 
-    void assignGarageSlot (Order order, int id);
+    public OrderService(RepairerServiceImpl repairerService, GarageService garageService) {
+        this.repairerService = repairerService;
+        this.garageService = garageService;
+        orderCount = 0;
+    }
 
-    void completeOrder (int id);
+    public void addOrder(Order order) {
+        if (order.getCost() < 0) throw new IncorrectCostException("Cost shouldn't be less then 0");
+        orders.add(order);
+        orderCount++;
+        order.setId(orderCount);
+    }
 
     public void removeOrder(int id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
