@@ -1,18 +1,17 @@
 package org.example.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class Order {
     private GarageSlot garageSlot;
-    private Collection<Repairer> repairers = new ArrayList<>();
+    private final Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
     private LocalDate creationDate;
     private LocalDate completionDate;
-    private  int id;
+    private int id;
 
     public Order() {
         this.creationDate = LocalDate.now();
@@ -40,10 +39,6 @@ public class Order {
 
     public Collection<Repairer> getRepairers() {
         return repairers;
-    }
-
-    public void setRepairers(Collection<Repairer> repairers) {
-        this.repairers = repairers;
     }
 
     public int getCost() {

@@ -3,12 +3,9 @@ package org.example.service;
 import junit.framework.Assert;
 import org.example.exception.RepairerNotFoundException;
 import org.example.model.Repairer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.example.constants.ExceptionMessage.INVALID_REPAIRER_ID;
 
 class RepairerServiceImplTest {
 
@@ -55,7 +52,7 @@ class RepairerServiceImplTest {
         RepairerNotFoundException exception = Assertions.assertThrows(
                 RepairerNotFoundException.class, () -> repairerService.getById(123)
         );
-        Assert.assertEquals(INVALID_REPAIRER_ID + "123", exception.getMessage());
+        Assert.assertEquals("there is no repairer with id=123", exception.getMessage());
     }
 
     @Test
@@ -63,6 +60,6 @@ class RepairerServiceImplTest {
         RepairerNotFoundException exception = Assertions.assertThrows(
                 RepairerNotFoundException.class, () -> repairerService.remove(321)
         );
-        Assert.assertEquals(INVALID_REPAIRER_ID + 321, exception.getMessage());
+        Assert.assertEquals("there is no repairer with id=321", exception.getMessage());
     }
 }

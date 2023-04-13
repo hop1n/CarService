@@ -6,18 +6,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class GarageServiceTest {
     private GarageService garageService;
-    List<GarageSlot> garageSlots = new ArrayList<>();
     GarageSlot garageSlot1 = new GarageSlot();
     GarageSlot garageSlot2 = new GarageSlot();
     GarageSlot garageSlot3 = new GarageSlot();
+
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         garageService = new GarageService();
         garageSlot2.setAvailable(false);
         garageService.add(garageSlot1);
@@ -26,7 +23,7 @@ public class GarageServiceTest {
     }
 
     @Test
-    public void addGarageSlot(){
+    public void addGarageSlot() {
         GarageSlot garageSlot4 = new GarageSlot();
         garageService.add(garageSlot4);
         Assertions.assertEquals(4, garageService.getGarageSlots().size());
@@ -45,7 +42,7 @@ public class GarageServiceTest {
     }
 
     @Test
-    public void getByIdException() throws GarageNotFoundException{
+    public void getByIdException() throws GarageNotFoundException {
         Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.getById(10));
     }
 
@@ -58,7 +55,7 @@ public class GarageServiceTest {
     }
 
     @Test
-    void removeException(){
+    void removeException() {
         Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.remove(10));
     }
 }

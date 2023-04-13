@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static org.example.constants.ExceptionMessage.INVALID_REPAIRER_ID;
-
 public class RepairerServiceImpl implements Service<Repairer> {
 
     private static int repairersCount;
@@ -27,7 +25,7 @@ public class RepairerServiceImpl implements Service<Repairer> {
         try {
             repairerToReturn = repairers.stream().filter(repairer -> repairer.getId() == id).collect(Collectors.toList()).get(0);
         } catch (IndexOutOfBoundsException e) {
-            throw new RepairerNotFoundException(INVALID_REPAIRER_ID + id);
+            throw new RepairerNotFoundException("there is no repairer with id=" + id);
         }
         return repairerToReturn;
     }
@@ -44,7 +42,7 @@ public class RepairerServiceImpl implements Service<Repairer> {
         boolean removeFlag;
         removeFlag = repairers.removeIf(repairer -> repairer.getId() == id);
         if (!removeFlag) {
-            throw new RepairerNotFoundException(INVALID_REPAIRER_ID + id);
+            throw new RepairerNotFoundException("there is no repairer with id=" + id);
         }
     }
 
