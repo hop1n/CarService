@@ -14,7 +14,7 @@ public class GarageServiceTest {
     GarageSlot garageSlot3 = new GarageSlot();
 
     @BeforeEach
-    public void setUp() {
+    public void testSetUp() {
         garageService = new GarageService();
         garageSlot2.setAvailable(false);
         garageService.add(garageSlot1);
