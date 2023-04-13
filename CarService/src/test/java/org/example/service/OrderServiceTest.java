@@ -29,7 +29,6 @@ public class OrderServiceTest {
     private static final GarageSlot GARAGE_SLOT = new GarageSlot();
     private static final GarageSlot GARAGE_SLOT1 = new GarageSlot();
 
-
     private RepairerServiceImpl repairerService;
     private GarageService garageService;
     private OrderService orderService;
@@ -110,7 +109,7 @@ public class OrderServiceTest {
 
         assertTrue(ORDER2.getGarageSlot().isAvailable());
         assertFalse(ORDER2.isInProgress());
-        assertTrue(ORDER2.getRepairers().stream().allMatch(Repairer::isAvailable));
+        assertTrue(ORDER2.getRepairers().stream().allMatch(Repairer::getIsAvailable));
     }
 
     @Test

@@ -11,47 +11,23 @@ import java.io.InputStreamReader;
 
 public class ConsoleProcessor {
 
-    static RepairerServiceImpl repairerService = new RepairerServiceImpl();
-    static GarageService garageService = new GarageService();
-    static OrderService orderService = new OrderService(repairerService, garageService);
+    RepairerServiceImpl repairerService = new RepairerServiceImpl();
+    GarageService garageService = new GarageService();
+    OrderService orderService = new OrderService(repairerService, garageService);
+    ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
     public void initLogs() {
-        GarageSlot garageSlot1 = new GarageSlot();
-        GarageSlot garageSlot2 = new GarageSlot();
-        GarageSlot garageSlot3 = new GarageSlot();
-        Repairer repairer1 = new Repairer("Tom");
-        Repairer repairer2 = new Repairer("Alex");
-        Repairer repairer3 = new Repairer("Jhon");
-        Order order1 = new Order(100);
-        Order order2 = new Order(100);
-        Order order3 = new Order(120);
-
-
-        repairerService.add(repairer1);
-        repairerService.add(repairer3);
-        repairerService.add(repairer2);
-
-        garageService.add(garageSlot1);
-        garageService.add(garageSlot2);
-        garageService.add(garageSlot3);
-
-
-        orderService.addOrder(order1);
-        orderService.assignRepairer(order1, repairer1.getId());
-        orderService.assignGarageSlot(order1, garageSlot1.getId());
-
-        orderService.addOrder(order2);
-        orderService.assignRepairer(order3, repairer3.getId());
-        orderService.assignGarageSlot(order3, garageSlot3.getId());
-
-//        Order order2 = orderService.createOrder(100,garageSlot1.getId());
-        orderService.addOrder(order3);
-        orderService.assignRepairer(order2, repairer2.getId());
-        orderService.assignGarageSlot(order2, garageSlot2.getId());
-        orderService.completeOrder(order2.getId());
-
-
-        System.out.println(orderService.getOrders());
+        try {
+            readFileDataService.readFromFile();
+        } catch (JsonParsingException e) {
+            System.err.println(e.getMessage());
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                readFileDataService.writeToFile();
+            }
+        });
     }
 
     //Method for input processing
@@ -67,6 +43,8 @@ public class ConsoleProcessor {
                 input = reader.readLine().toLowerCase().trim();
 
                 if (input.equals("exit")) {
+                    readFileDataService.writeToFile();
+                    System.out.println("Files was successfully overwritten");
                     break;
                 }
                 String[] words = input.split(" ");
@@ -92,23 +70,26 @@ public class ConsoleProcessor {
                     System.err.println("Please specify operation for selected object");
                 }
             }
+        } catch (JsonParsingException e) {
+            System.err.println(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //Method for Repairers type processing
-    public static void processRepairer(String[] words) {
+    public void processRepairer(String[] words) {
         switch (words[1]) {
             case "add":
                 //Checking for empty name
                 try {
                     String repairerName = words[2].substring(0, 1).toUpperCase() + words[2].substring(1);
+                    //advice for future: create model instances in Services,
+                    //send all required info for model creation to Service
                     Repairer repairer = new Repairer(repairerName);
                     repairerService.add(repairer);
-                    repairerService.writeToFile(repairer);
                     System.out.printf("New repairer %s added successfully\n", repairerName);
-                } catch (FileNotFoundException e){
+                } catch (FileNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add repairer's name");
@@ -133,7 +114,7 @@ public class ConsoleProcessor {
     }
 
     //Method for Garage type processing
-    public static void processGarage(String[] words) {
+    public void processGarage(String[] words) {
         switch (words[1]) {
             case "add":
                 garageService.add(new GarageSlot());
@@ -169,7 +150,7 @@ public class ConsoleProcessor {
     }
 
     //Method for Order type processing
-    public static void processOrder(String[] words) {
+    public void processOrder(String[] words) {
         switch (words[1]) {
             case "create":
                 try {
@@ -248,8 +229,10 @@ public class ConsoleProcessor {
             case "printlist":
                 try {
                     System.out.println(orderService.getSortedOrders(words[3]));
+                } catch (IncorrectSortTypeException e) {
+                    System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"type 1-5\"");
+                    System.err.println("Please add type CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIRER");
                 } catch (NumberFormatException e) {
                     System.err.println("Incorrect sort type, please state actual number");
                 }
@@ -262,7 +245,7 @@ public class ConsoleProcessor {
     }
 
     //Typical commands examples
-    public static void getHelp(String[] words) {
+    public void getHelp(String[] words) {
         if (words.length < 2) {
             System.out.println("Command structure: \"object action arguments\"");
             System.out.println("Objects: Repairer, Garage, Order");

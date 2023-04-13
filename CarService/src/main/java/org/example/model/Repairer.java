@@ -23,7 +23,7 @@ public class Repairer {
         this.id = id;
     }
 
-    public boolean isAvailable() {
+    public boolean getIsAvailable() {
         return isAvailable;
     }
 
