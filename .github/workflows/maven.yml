@@ -33,3 +33,8 @@ jobs:
         ls -a
     - name: Step 5 - Running tests
       run: mvn --batch-mode --update-snapshots verify -f CarService/pom.xml
+    - name: Step 6 - Test coverage visualisation
+      run: /Total.*?([0-9]{1,3})%/
+
+
+      
