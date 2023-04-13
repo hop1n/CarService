@@ -32,15 +32,7 @@ jobs:
         cd CarService/target
         ls -a
     - name: Step 5 - Running tests
-      run: mvn --batch-mode --update-snapshots verify -f CarService/pom.xml
-    - name: Step 6 - Test coverage visualisation
-      # You may pin to the exact commit or the version.
-      # uses: PavanMudigonda/jacoco-reporter@ffe0b95c14292be4d076e56d50ba6c3b94c43a77
-      uses: PavanMudigonda/jacoco-reporter@v4.8
-      with:
-        # Path to the JaCoCo coverage results file which will be used to generate a report. 
-        #The only coverage results format supported is the JaCoCo XML schema.
-        coverage_results_path: coverage.xml
+      run: mvn --batch-mode --update-snapshots test -f CarService/pom.xml
 
 
 
