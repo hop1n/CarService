@@ -14,7 +14,7 @@ public class GarageServiceTest {
     GarageSlot garageSlot3 = new GarageSlot();
 
     @BeforeEach
-    public void testSetUp() {
+    public void setUp() {
         garageService = new GarageService();
         garageSlot2.setAvailable(false);
         garageService.add(garageSlot1);
@@ -23,7 +23,7 @@ public class GarageServiceTest {
     }
 
     @Test
-    public void addGarageSlot() {
+    public void testAddGarageSlot() {
         GarageSlot garageSlot4 = new GarageSlot();
         garageService.add(garageSlot4);
         Assertions.assertEquals(4, garageService.getGarageSlots().size());
