@@ -117,12 +117,17 @@ public class ConsoleProcessor {
     public void processGarage(String[] words) {
         switch (words[1]) {
             case "add":
-                garageService.add(new GarageSlot());
-                System.out.printf("New garage slot ID:%d added succesfully\n" +
-                                "Total garage slots: %d\n",
-                        garageService.getGarageSlots().get(garageService.getGarageSlots().size() - 1).getId(),
-                        garageService.getGarageSlots().size()
-                );
+                try {
+                    garageService.add(new GarageSlot());
+                    System.out.printf("New garage slot ID:%d added succesfully\n",
+                            garageService.getGarageSlots().get(garageService.getGarageSlots().size() - 1).getId()
+                    );
+                } catch (AssignDeprecatedMethod e){
+                    System.err.println(e.getMessage());
+                } finally {
+                    System.out.printf("Total garage slots: %d\n",
+                            garageService.getGarageSlots().size());
+                }
                 break;
             case "remove":
                 try {
@@ -132,8 +137,10 @@ public class ConsoleProcessor {
                             Integer.parseInt(words[2]),
                             garageService.getGarageSlots().size()
                     );
-                } catch (GarageNotFoundException e) {
+                } catch (AssignDeprecatedMethod | GarageNotFoundException e){
                     System.err.println(e.getMessage());
+                    System.out.printf("Total garage slots: %d\n",
+                            garageService.getGarageSlots().size());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please enter garage number");
                 } catch (NumberFormatException e) {
