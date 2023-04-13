@@ -40,11 +40,7 @@ jobs:
       with:
         # Path to the JaCoCo coverage results file which will be used to generate a report. 
         #The only coverage results format supported is the JaCoCo XML schema.
-
-        coverage_results_path: normal
-        # Optionally specify the level of output detail for the test results.
-        #May be one of: `none`, `Minimal`, `normal`, `detailed`, `diagnostic`
-        #The default is `normal`.
+        coverage_results_path: coverage.xml
 
 
 
