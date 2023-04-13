@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.text.MessageFormat;
 
 public class ReadFileDataService {
-    RepairerServiceImpl repairerService;
+    RepairerService repairerService;
     GarageService garageService;
     OrderService orderService;
 
@@ -28,7 +28,7 @@ public class ReadFileDataService {
     private final ObjectMapper objectMapper;
 
 
-    public ReadFileDataService(RepairerServiceImpl repairerService,
+    public ReadFileDataService(RepairerService repairerService,
                                GarageService garageService, OrderService orderService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
@@ -39,20 +39,18 @@ public class ReadFileDataService {
     }
 
     public void readFromFile() {
-        GarageServiceDto garageServiceDto = new GarageServiceDto();
-        RepairerServiceDto repairerServiceDto = new RepairerServiceDto();
-        OrderServiceDto orderServiceDto = new OrderServiceDto();
        try {
+           //TODO: split to readFromJson same as writeJsonStringToFile
            if (new File(REPAIRERS_PATH).length() != 0) {
-               repairerServiceDto = objectMapper.readValue(Paths.get(REPAIRERS_PATH).toFile(), RepairerServiceDto.class);
+               RepairerServiceDto repairerServiceDto = objectMapper.readValue(Paths.get(REPAIRERS_PATH).toFile(), RepairerServiceDto.class);
                repairerServiceDto.toService(repairerService);
            }
            if (new File(GARAGES_PATH).length() != 0) {
-               garageServiceDto = objectMapper.readValue(Paths.get(GARAGES_PATH).toFile(), GarageServiceDto.class);
+               GarageServiceDto garageServiceDto = objectMapper.readValue(Paths.get(GARAGES_PATH).toFile(), GarageServiceDto.class);
                garageServiceDto.toService(garageService);
            }
            if (new File(ORDERS_PATH).length() != 0) {
-               orderServiceDto = objectMapper.readValue(Paths.get(ORDERS_PATH).toFile(), OrderServiceDto.class);
+               OrderServiceDto orderServiceDto = objectMapper.readValue(Paths.get(ORDERS_PATH).toFile(), OrderServiceDto.class);
                orderServiceDto.toService(orderService);
            }
        } catch (IOException ex){

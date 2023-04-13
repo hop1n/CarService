@@ -11,8 +11,8 @@ import java.io.InputStreamReader;
 
 public class ConsoleProcessor {
 
-    RepairerServiceImpl repairerService = new RepairerServiceImpl();
-    GarageService garageService = new GarageService();
+    RepairerService repairerService = new RepairerService();
+    GarageService garageService = new GarageService("src/application.properties");
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
@@ -22,12 +22,7 @@ public class ConsoleProcessor {
         } catch (JsonParsingException e) {
             System.err.println(e.getMessage());
         }
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                readFileDataService.writeToFile();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> readFileDataService.writeToFile()));
     }
 
     //Method for input processing

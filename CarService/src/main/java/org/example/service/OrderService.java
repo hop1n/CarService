@@ -15,12 +15,12 @@ public class OrderService {
         CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIRER
     }
 
-    private final RepairerServiceImpl repairerService;
+    private final RepairerService repairerService;
     private final GarageService garageService;
     private int orderCount;
     private List<Order> orders = new ArrayList<>();
 
-    public OrderService(RepairerServiceImpl repairerService, GarageService garageService) {
+    public OrderService(RepairerService repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
         orderCount = 0;
@@ -35,7 +35,7 @@ public class OrderService {
 
     public void removeOrder(int id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
-            //Use MessageFormat instead of string concatination
+            //TODO: Use MessageFormat or String.formatted instead of string concatination
             throw new OrderNotFoundException(MessageFormat.format("There is no order with ID {0}", id));
         }
     }
@@ -45,7 +45,7 @@ public class OrderService {
             if (repairerService.getById(id).getIsAvailable()) {
                 order.addRepair(repairerService.getById(id));
                 repairerService.getById(id).setIsAvailable(false);
-                //Use MessageFormat instead of string concatination
+                //TODO: Use MessageFormat or String.formatted instead of string concatination
             } else throw new RepairerNotAvailableException("Repairer with ID " + id + " is unavailable");
         }
     }
@@ -57,16 +57,16 @@ public class OrderService {
             }
             order.setGarageSlot(garageService.getById(garageId));
             garageService.getById(garageId).setAvailable(false);
-            //Use MessageFormat instead of string concatination
+            //TODO: Use MessageFormat or String.formatted instead of string concatination
         } else throw new GarageNotAvailableException("Garage with ID " + garageId + " is unavailable");
     }
 
     public void completeOrder(int id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny()
-                //Use MessageFormat instead of string concatination
+                //TODO: Use MessageFormat or String.formatted instead of string concatination
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID " + id));
         if (!order.isInProgress()) {
-            //Use MessageFormat instead of string concatination
+            //TODO: Use MessageFormat or String.formatted instead of string concatination
             throw new OrderAlreadyCompletedException("Order with ID " + id + " already completed");
         }
         order.setInProgress(false);
@@ -79,6 +79,10 @@ public class OrderService {
     }
 
     public List<Order> getSortedOrders(String field) {
+        if (field == null) {
+            throw new IncorrectSortTypeException("Sort type cannot be null");
+        }
+
         try {
             switch (Fields.valueOf(field.toUpperCase())) {
                 case CREATION:
@@ -102,14 +106,14 @@ public class OrderService {
             return orders;
         }
         catch (IllegalArgumentException ex) {
-            //Use MessageFormat instead of string concatination
+            //TODO: Use MessageFormat or String.formatted instead of string concatination
             throw new IncorrectSortTypeException("There is no such sort type as: " + field);
         }
     }
 
     public Order getOrderById(int id) {
         return orders.stream().filter(order -> order.getId() == id).findAny()
-                //Use MessageFormat instead of string concatination
+                //TODO: Use MessageFormat or String.formatted instead of string concatination
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID " + id));
     }
 
