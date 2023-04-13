@@ -12,18 +12,10 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 
 public class GarageService implements Service<GarageSlot> {
-    public static int garageCount;
     private List<GarageSlot> garageSlots = new ArrayList<>();
     private final String PATH;
     private boolean changeable;
-    public List<GarageSlot> getGarageSlots() {
-        return garageSlots;
-    }
-
-    public void setGarageSlots(List<GarageSlot> garageSlots) {
-        this.garageSlots = garageSlots;
-        garageCount = garageSlots.size();
-    }
+    public int garageCount;
 
     public GarageService(String path) {
         this.PATH = path;
@@ -60,11 +52,10 @@ public class GarageService implements Service<GarageSlot> {
         return changeable;
     }
 
-    @Override
     public void add(GarageSlot garageSlot){
         if (changeable) {
-            garageCount++;
             garageSlots.add(garageSlot);
+            garageCount++;
             garageSlot.setId(garageCount);
         } else {
             throw new AssignDeprecatedMethod("You can't change the number of garages");
@@ -72,7 +63,7 @@ public class GarageService implements Service<GarageSlot> {
     }
 
     @Override
-    public void remove(int id){
+    public void remove(int id) {
         if (changeable){
             boolean isRemoved;
             isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
@@ -86,13 +77,8 @@ public class GarageService implements Service<GarageSlot> {
 
     @Override
     public GarageSlot getById(int id) {
-        GarageSlot garageToReturn;
-        try {
-            garageToReturn = garageSlots.stream().filter(slot -> slot.getId() == id).findFirst().get();
-        } catch (NoSuchElementException e) {
-            throw new GarageNotFoundException("Garage with such id not found");
-        }
-        return garageToReturn;
+        return garageSlots.stream().filter(slot -> slot.getId() == id).findFirst()
+                .orElseThrow(() -> new GarageNotFoundException("Garage with such id not found"));
     }
 
     @Override
@@ -100,5 +86,21 @@ public class GarageService implements Service<GarageSlot> {
         return "GarageService{" +
                 "garageSlots=" + garageSlots +
                 '}';
+    }
+
+    public int getGarageCount() {
+        return garageCount;
+    }
+
+    public void setGarageCount(int garageCount) {
+        this.garageCount = garageCount;
+    }
+
+    public List<GarageSlot> getGarageSlots() {
+        return garageSlots;
+    }
+
+    public void setGarageSlots(List<GarageSlot> garageSlots) {
+        this.garageSlots = garageSlots;
     }
 }
