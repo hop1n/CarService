@@ -7,7 +7,7 @@ import java.util.List;
 
 public class GarageServiceDto {
 
-    public  int garageCount;
+    private int garageCount;
     private List<GarageSlot> garageSlots;
 
     public GarageServiceDto(int garageCount, List<GarageSlot> garageSlots) {
@@ -18,11 +18,11 @@ public class GarageServiceDto {
     public GarageServiceDto() {
     }
 
-    public static GarageServiceDto fromService(GarageService garageService){
+    public static GarageServiceDto fromService(GarageService garageService) {
         return new GarageServiceDto(garageService.getGarageCount(), garageService.getGarageSlots());
     }
 
-    public void toService(GarageService garageService){
+    public void toService(GarageService garageService) {
         garageService.setGarageSlots(this.garageSlots);
         garageService.setGarageCount(this.garageCount);
     }

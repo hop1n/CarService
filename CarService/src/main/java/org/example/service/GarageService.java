@@ -6,67 +6,42 @@ import org.example.exception.PropertyNotFound;
 import org.example.model.GarageSlot;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Properties;
+import java.util.*;
 
 public class GarageService implements Service<GarageSlot> {
     private List<GarageSlot> garageSlots = new ArrayList<>();
-    private final String PATH;
+    private final String path;
     private boolean changeable;
-    public int garageCount;
+    private int garageCount;
 
     public GarageService(String path) {
-        this.PATH = path;
+        this.path = path;
         initializePropertyFromFile();
         garageCount = 0;
     }
 
     public GarageService() {
-        this.PATH = "";
+        this.path = "";
         this.changeable = true;
         garageCount = 0;
     }
 
+    //TODO: Split this method
     public void initializePropertyFromFile(){
         Properties properties = new Properties();
         try {
-            FileReader fileReader = new FileReader(PATH);
+            FileReader fileReader = new FileReader(path);
             properties.load(fileReader);
         } catch (IOException e) {
             throw new PropertyNotFound("Property file does not exist");
         }
-        if (properties.getProperty("changeable_number_of_garages").equals("true")){
-            this.changeable = true;
-        } else {
-            this.changeable = false;
-        }
-    }
-
-    public void setChangeable(boolean changeable) {
-        this.changeable = changeable;
-    }
-
-    public boolean getChangeable() {
-        return changeable;
-    }
-
-    public void add(GarageSlot garageSlot){
-        if (changeable) {
-            garageSlots.add(garageSlot);
-            garageCount++;
-            garageSlot.setId(garageCount);
-        } else {
-            throw new AssignDeprecatedMethod("You can't change the number of garages");
-        }
+        this.changeable = properties.getProperty("changeable_number_of_garages").equals("true");
     }
 
     @Override
     public void remove(int id) {
         if (changeable){
-            boolean isRemoved;
-            isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
+            boolean isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
             if (!isRemoved) {
                 throw new GarageNotFoundException("Garage with such id not found");
             }
@@ -102,5 +77,28 @@ public class GarageService implements Service<GarageSlot> {
 
     public void setGarageSlots(List<GarageSlot> garageSlots) {
         this.garageSlots = garageSlots;
+        this.garageCount = garageSlots
+                .stream()
+                .max(Comparator.comparing(GarageSlot::getId))
+                .map(GarageSlot::getId)
+                .orElse(0);
+    }
+
+    public void setChangeable(boolean changeable) {
+        this.changeable = changeable;
+    }
+
+    public boolean getChangeable() {
+        return changeable;
+    }
+
+    public void add(GarageSlot garageSlot){
+        if (changeable) {
+            garageSlots.add(garageSlot);
+            garageCount++;
+            garageSlot.setId(garageCount);
+        } else {
+            throw new AssignDeprecatedMethod("You can't change the number of garages");
+        }
     }
 }

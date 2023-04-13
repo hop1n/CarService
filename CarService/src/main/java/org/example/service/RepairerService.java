@@ -5,28 +5,19 @@ import org.example.model.Repairer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
-public class RepairerServiceImpl implements Service<Repairer> {
+public class RepairerService implements Service<Repairer> {
     private int repairersCount;
     private Collection<Repairer> repairers = new ArrayList<>();
 
 
-    public RepairerServiceImpl() {
+    public RepairerService() {
         repairersCount = 0;
     }
 
     public Repairer getById(int id) {
-        //optimize like in GarageService.getById()
-
-        Repairer repairerToReturn;
-        try {
-            repairerToReturn = repairers.stream().filter(repairer -> repairer.getId() == id).collect(Collectors.toList()).get(0);
-        } catch (IndexOutOfBoundsException e) {
-            //Use MessageFormat instead of string concatination
-            throw new RepairerNotFoundException("there is no repairer with id=" + id);
-        }
-        return repairerToReturn;
+        return repairers.stream().filter(repairer -> repairer.getId() == id).findFirst()
+                .orElseThrow(() -> new RepairerNotFoundException("there is no repairer with id: %d".formatted(id)));
     }
 
     @Override
@@ -40,8 +31,7 @@ public class RepairerServiceImpl implements Service<Repairer> {
     public void remove(int id) {
         boolean removeFlag = repairers.removeIf(repairer -> repairer.getId() == id);
         if (!removeFlag) {
-            //Use MessageFormat instead of string concatination
-            throw new RepairerNotFoundException("there is no repairer with id=" + id);
+            throw new RepairerNotFoundException("there is no repairer with id: %d".formatted(id));
         }
     }
 

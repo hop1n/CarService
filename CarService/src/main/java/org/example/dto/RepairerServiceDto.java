@@ -1,7 +1,7 @@
 package org.example.dto;
 
 import org.example.model.Repairer;
-import org.example.service.RepairerServiceImpl;
+import org.example.service.RepairerService;
 
 import java.util.Collection;
 
@@ -18,11 +18,11 @@ public class RepairerServiceDto {
     public RepairerServiceDto() {
     }
 
-    public static RepairerServiceDto fromService(RepairerServiceImpl repairerService){
+    public static RepairerServiceDto fromService(RepairerService repairerService){
         return new RepairerServiceDto(repairerService.getRepairersCount(), repairerService.getRepairers());
     }
 
-    public void toService(RepairerServiceImpl repairerService){
+    public void toService(RepairerService repairerService){
         repairerService.setRepairers(this.repairers);
         repairerService.setRepairersCount(this.repairersCount);
     }
