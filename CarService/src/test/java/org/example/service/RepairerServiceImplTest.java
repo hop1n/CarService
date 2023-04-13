@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RepairerServiceImplTest {
+public class RepairerServiceImplTest {
 
     private RepairerServiceImpl repairerService;
     Repairer repairerToAdd = new Repairer("Tom");
