@@ -12,20 +12,10 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 
 public class GarageService implements Service<GarageSlot> {
-    public static int garageCount;
     private List<GarageSlot> garageSlots = new ArrayList<>();
     private final String PATH;
     private boolean changeable;
-    public List<GarageSlot> getGarageSlots() {
-        return garageSlots;
-    }
     public int garageCount;
-    private List<GarageSlot> garageSlots = new ArrayList<>();
-
-    public void setGarageSlots(List<GarageSlot> garageSlots) {
-        this.garageSlots = garageSlots;
-        garageCount = garageSlots.size();
-    }
 
     public GarageService(String path) {
         this.PATH = path;
@@ -62,15 +52,10 @@ public class GarageService implements Service<GarageSlot> {
         return changeable;
     }
 
-    @Override
-    public void add(GarageSlot garageSlot) {
-        garageSlots.add(garageSlot);
-        garageCount++;
-        garageSlot.setId(garageCount);
     public void add(GarageSlot garageSlot){
         if (changeable) {
-            garageCount++;
             garageSlots.add(garageSlot);
+            garageCount++;
             garageSlot.setId(garageCount);
         } else {
             throw new AssignDeprecatedMethod("You can't change the number of garages");
@@ -79,10 +64,6 @@ public class GarageService implements Service<GarageSlot> {
 
     @Override
     public void remove(int id) {
-        boolean isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
-        if (!isRemoved) {
-            throw new GarageNotFoundException("Garage with such id not found");
-    public void remove(int id){
         if (changeable){
             boolean isRemoved;
             isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);

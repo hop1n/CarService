@@ -45,19 +45,19 @@ public class ReadFileDataService {
        try {
            if (new File(REPAIRERS_PATH).length() != 0) {
                repairerServiceDto = objectMapper.readValue(Paths.get(REPAIRERS_PATH).toFile(), RepairerServiceDto.class);
+               repairerServiceDto.toService(repairerService);
            }
            if (new File(GARAGES_PATH).length() != 0) {
                garageServiceDto = objectMapper.readValue(Paths.get(GARAGES_PATH).toFile(), GarageServiceDto.class);
+               garageServiceDto.toService(garageService);
            }
            if (new File(ORDERS_PATH).length() != 0) {
                orderServiceDto = objectMapper.readValue(Paths.get(ORDERS_PATH).toFile(), OrderServiceDto.class);
+               orderServiceDto.toService(orderService);
            }
        } catch (IOException ex){
            throw new JsonParsingException(ex.getMessage(), ex);
        }
-        garageServiceDto.toService(garageService);
-        repairerServiceDto.toService(repairerService);
-        orderServiceDto.toService(orderService);
     }
 
     public void writeToFile() {
