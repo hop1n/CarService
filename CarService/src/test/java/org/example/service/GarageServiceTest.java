@@ -23,7 +23,7 @@ public class GarageServiceTest {
     }
 
     @Test
-    public void testAddGarageSlot() {
+    public void addGarageSlot() {
         GarageSlot garageSlot4 = new GarageSlot();
         garageService.add(garageSlot4);
         Assertions.assertEquals(4, garageService.getGarageSlots().size());
