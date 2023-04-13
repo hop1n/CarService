@@ -8,18 +8,21 @@ import org.example.model.Repairer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConsoleProcessor {
 
     static RepairerServiceImpl repairerService = new RepairerServiceImpl();
-    static GarageService garageService = new GarageService();
+    static GarageService garageService = new GarageService("CarService/src/application.properties");
     static OrderService orderService = new OrderService(repairerService, garageService);
 
-    public void initLogs() {
+
+    public void initLogs(){
         GarageSlot garageSlot1 = new GarageSlot();
         GarageSlot garageSlot2 = new GarageSlot();
         GarageSlot garageSlot3 = new GarageSlot();
+        List<GarageSlot> garageSlots = new ArrayList<>();
         Repairer repairer1 = new Repairer("Tom");
         Repairer repairer2 = new Repairer("Alex");
         Repairer repairer3 = new Repairer("Jhon");
@@ -27,14 +30,20 @@ public class ConsoleProcessor {
         Order order2 = new Order(100);
         Order order3 = new Order(120);
 
-
         repairerService.add(repairer1);
         repairerService.add(repairer3);
         repairerService.add(repairer2);
 
-        garageService.add(garageSlot1);
-        garageService.add(garageSlot2);
-        garageService.add(garageSlot3);
+        garageSlot1.setId(1);
+        garageSlots.add(garageSlot1);
+        garageSlot2.setId(2);
+        garageSlots.add(garageSlot2);
+        garageSlot3.setId(3);
+        garageSlots.add(garageSlot3);
+        garageService.setGarageSlots(garageSlots);
+//        garageService.add(garageSlot1);
+//        garageService.add(garageSlot2);
+//        garageService.add(garageSlot3);
 
 
         orderService.addOrder(order1);
@@ -130,15 +139,20 @@ public class ConsoleProcessor {
     }
 
     //Method for Garage type processing
-    public static void processGarage(String[] words) {
+    public static void processGarage(String[] words){
         switch (words[1]) {
             case "add":
-                garageService.add(new GarageSlot());
-                System.out.printf("New garage slot ID:%d added succesfully\n" +
-                                "Total garage slots: %d\n",
-                        garageService.getGarageSlots().get(garageService.getGarageSlots().size() - 1).getId(),
-                        garageService.getGarageSlots().size()
-                );
+                try {
+                    garageService.add(new GarageSlot());
+                    System.out.printf("New garage slot ID:%d added succesfully\n",
+                            garageService.getGarageSlots().get(garageService.getGarageSlots().size() - 1).getId()
+                    );
+                } catch (AssignDeprecatedMethod e){
+                    System.err.println(e.getMessage());
+                } finally {
+                    System.out.printf("Total garage slots: %d\n",
+                            garageService.getGarageSlots().size());
+                }
                 break;
             case "remove":
                 try {
@@ -148,8 +162,10 @@ public class ConsoleProcessor {
                             Integer.parseInt(words[2]),
                             garageService.getGarageSlots().size()
                     );
-                } catch (GarageNotFoundException e) {
+                } catch (AssignDeprecatedMethod | GarageNotFoundException e){
                     System.err.println(e.getMessage());
+                    System.out.printf("Total garage slots: %d\n",
+                            garageService.getGarageSlots().size());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please enter garage number");
                 } catch (NumberFormatException e) {
