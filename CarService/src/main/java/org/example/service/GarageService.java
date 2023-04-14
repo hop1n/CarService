@@ -16,7 +16,6 @@ public class GarageService implements Service<GarageSlot> {
 
     public GarageService(String path) {
         this.path = path;
-        initializePropertyFromFile();
         garageCount = 0;
     }
 
