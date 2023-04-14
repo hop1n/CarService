@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RepairerServiceImplTest {
+public class RepairerServiceTest {
 
-    private RepairerServiceImpl repairerService;
+    private RepairerService repairerService;
     Repairer repairerToAdd = new Repairer("Tom");
     Repairer repairer1 = new Repairer("Harry");
     Repairer repairer2 = new Repairer("Ivan");
@@ -17,7 +17,7 @@ class RepairerServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        repairerService = new RepairerServiceImpl();
+        repairerService = new RepairerService();
         repairerService.add(repairer1);
         repairerService.add(repairer2);
         repairerService.add(repairer3);
@@ -52,7 +52,7 @@ class RepairerServiceImplTest {
         RepairerNotFoundException exception = Assertions.assertThrows(
                 RepairerNotFoundException.class, () -> repairerService.getById(123)
         );
-        Assert.assertEquals("there is no repairer with id=123", exception.getMessage());
+        Assert.assertEquals("there is no repairer with id: 123", exception.getMessage());
     }
 
     @Test
@@ -60,6 +60,6 @@ class RepairerServiceImplTest {
         RepairerNotFoundException exception = Assertions.assertThrows(
                 RepairerNotFoundException.class, () -> repairerService.remove(321)
         );
-        Assert.assertEquals("there is no repairer with id=321", exception.getMessage());
+        Assert.assertEquals("there is no repairer with id: 321", exception.getMessage());
     }
 }

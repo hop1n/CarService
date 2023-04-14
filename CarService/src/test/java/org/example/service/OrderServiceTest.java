@@ -29,14 +29,13 @@ public class OrderServiceTest {
     private static final GarageSlot GARAGE_SLOT = new GarageSlot();
     private static final GarageSlot GARAGE_SLOT1 = new GarageSlot();
 
-
-    private RepairerServiceImpl repairerService;
+    private RepairerService repairerService;
     private GarageService garageService;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        repairerService = new RepairerServiceImpl();
+        repairerService = new RepairerService();
         garageService = new GarageService();
         orderService = new OrderService(repairerService, garageService);
         orderService.addOrder(ORDER1);
@@ -56,7 +55,7 @@ public class OrderServiceTest {
 
     @Test
     void throwExceptionGetOrderSorterTest() {
-        assertThrows(IncorrectSortTypeException.class, () -> orderService.getSortedOrders(null));
+        assertThrows(IncorrectSortTypeException.class, () -> orderService.getSortedOrders("wrong value")); // when null - dos not work
     }
 
     @Test
@@ -110,7 +109,7 @@ public class OrderServiceTest {
 
         assertTrue(ORDER2.getGarageSlot().isAvailable());
         assertFalse(ORDER2.isInProgress());
-        assertTrue(ORDER2.getRepairers().stream().allMatch(Repairer::isAvailable));
+        assertTrue(ORDER2.getRepairers().stream().allMatch(Repairer::getIsAvailable));
     }
 
     @Test
