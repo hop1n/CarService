@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.apache.log4j.Logger;
 import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
@@ -8,13 +9,15 @@ import org.example.model.Repairer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.NoSuchElementException;
+
 
 public class ConsoleProcessor {
 
     static RepairerServiceImpl repairerService = new RepairerServiceImpl();
     static GarageService garageService = new GarageService();
     static OrderService orderService = new OrderService(repairerService, garageService);
+
+    private static final Logger logger = Logger.getLogger(ConsoleProcessor.class);
 
     public void initLogs() {
         GarageSlot garageSlot1 = new GarageSlot();
@@ -52,7 +55,7 @@ public class ConsoleProcessor {
         orderService.completeOrder(order2.getId());
 
 
-        System.out.println(orderService.getOrders());
+        logger.info(orderService.getOrders());
     }
 
     //Method for input processing
@@ -62,8 +65,8 @@ public class ConsoleProcessor {
         ) {
             String input;
             while (true) {
-                System.out.println("=====");
-                System.out.println("Please enter command or type \"help\" for command list. Enter \"exit\" to exit:");
+                logger.info("=====");
+                logger.info("Please enter command or type \"help\" for command list. Enter \"exit\" to exit:");
 
                 input = reader.readLine().toLowerCase().trim();
 
@@ -86,11 +89,11 @@ public class ConsoleProcessor {
                             getHelp(words);
                             break;
                         default:
-                            System.out.println("Unexpected value: " + words[0]);
+                            logger.warn("Unexpected value: " + words[0]);
                             break;
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please specify operation for selected object");
+                    logger.error("Please specify operation for selected object");
                 }
             }
         } catch (IOException e) {
@@ -106,25 +109,25 @@ public class ConsoleProcessor {
                 try {
                     String repairerName = words[2].substring(0, 1).toUpperCase() + words[2].substring(1);
                     repairerService.add(new Repairer(repairerName));
-                    System.out.printf("New repairer %s added successfully\n", repairerName);
+                    logger.debug("New repairer " + repairerName + " added successfully\n");
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add repairer's name");
+                    logger.error("Please add repairer's name");
                 }
                 break;
             case "remove":
                 try {
                     repairerService.remove(Integer.parseInt(words[2]));
                 } catch (RepairerNotFoundException e) {
-                    System.err.println(e.getMessage());
+                    logger.error(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please enter repairer's ID number");
+                    logger.error("Please enter repairer's ID number");
                 }
                 break;
             case "printlist":
-                System.out.println(repairerService);
+                logger.info(repairerService);
                 break;
             default:
-                System.out.println("Unexpected value: " + words[1]);
+                logger.warn("Unexpected value: " + words[1]);
                 break;
         }
     }
@@ -134,33 +137,29 @@ public class ConsoleProcessor {
         switch (words[1]) {
             case "add":
                 garageService.add(new GarageSlot());
-                System.out.printf("New garage slot ID:%d added succesfully\n" +
-                                "Total garage slots: %d\n",
-                        garageService.getGarageSlots().get(garageService.getGarageSlots().size() - 1).getId(),
-                        garageService.getGarageSlots().size()
+                logger.debug("New garage slot ID:" + garageService.getGarageSlots().get(garageService.getGarageSlots().size() - 1).getId() + " added successfully\n" +
+                        "Total garage slots: " + garageService.getGarageSlots().size()
                 );
                 break;
             case "remove":
                 try {
                     garageService.remove(Integer.parseInt(words[2]));
-                    System.out.printf("Garage slot %d deleted succesfully\n" +
-                                    "Total garage slots: %d\n",
-                            Integer.parseInt(words[2]),
-                            garageService.getGarageSlots().size()
+                    logger.debug("Garage slot " + Integer.parseInt(words[2]) + " deleted successfully\n" +
+                            "Total garage slots: " + garageService.getGarageSlots().size()
                     );
                 } catch (GarageNotFoundException e) {
-                    System.err.println(e.getMessage());
+                    logger.error(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please enter garage number");
+                    logger.error("Please enter garage number");
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect garage number");
+                    logger.error("Incorrect garage number");
                 }
                 break;
             case "printlist":
-                System.out.println(garageService);
+                logger.info(garageService);
                 break;
             default:
-                System.out.println("Unexpected value: " + words[1]);
+                logger.warn("Unexpected value: " + words[1]);
                 break;
         }
     }
@@ -171,25 +170,25 @@ public class ConsoleProcessor {
             case "create":
                 try {
                     orderService.addOrder(new Order(Integer.parseInt(words[3])));
-                    System.out.println("New order created successfully");
+                    logger.debug("New order created successfully");
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"cost amount\"");
+                    logger.error("Please add \"cost amount\"");
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect cost, please state a digit");
+                    logger.error("Incorrect cost, please state a digit");
                 } catch (IncorrectCostException e) {
-                    System.err.println(e.getMessage());
+                    logger.error(e.getMessage());
                 }
                 break;
             case "remove":
                 try {
                     orderService.removeOrder(Integer.parseInt(words[3]));
-                    System.out.println("Order with ID " + words[3] + " removed successfully");
+                    logger.debug("Order with ID " + words[3] + " removed successfully");
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"order ID\"");
+                    logger.error("Please add \"order ID\"");
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect order's ID number");
+                    logger.error("Incorrect order's ID number");
                 } catch (OrderNotFoundException e) {
-                    System.err.println(e.getMessage());
+                    logger.error(e.getMessage());
                 }
                 break;
             case "assign":
@@ -197,63 +196,61 @@ public class ConsoleProcessor {
                     if (words[4].equals("repairer")) {
                         orderService.assignRepairer(orderService.getOrderById(Integer.parseInt(words[3])),
                                 Integer.parseInt(words[5]));
-                        System.out.printf("Repairer %d assigned to Order %d successfully", Integer.parseInt(words[5]),
-                                Integer.parseInt(words[3]));
+                        logger.debug("Repairer " + Integer.parseInt(words[5]) + " assigned to Order " + Integer.parseInt(words[3]) + " successfully");
                     } else if (words[4].equals("garage")) {
                         orderService.assignGarageSlot(orderService.getOrderById(Integer.parseInt(words[3])),
                                 Integer.parseInt(words[5]));
-                        System.out.printf("Garage %d assigned to Order %d successfully", Integer.parseInt(words[5]),
-                                Integer.parseInt(words[3]));
+                        logger.debug("Garage " + Integer.parseInt(words[5]) + " assigned to Order " + Integer.parseInt(words[3]) + " successfully");
                     } else {
-                        System.out.println("Cannot recognize assignment");
+                        logger.warn("Cannot recognize assignment");
                     }
                 } catch (GarageNotAvailableException | RepairerNotAvailableException | GarageNotFoundException |
-                         RepairerNotFoundException e) {
-                    System.err.println(e.getMessage());
+                        RepairerNotFoundException e) {
+                    logger.error(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Incorrect command: not enough arguments");
+                    logger.error("Incorrect command: not enough arguments");
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect Order, Garage or Repairer ID number");
+                    logger.error("Incorrect Order, Garage or Repairer ID number");
                 } catch (NullPointerException e) {
-                    System.err.println("Incorrect Order ID");
+                    logger.error("Incorrect Order ID");
                 }
                 break;
             case "complete":
                 try {
                     orderService.completeOrder(Integer.parseInt(words[3]));
-                    System.out.printf("Order %s completed successfully\n", words[3]);
+                    logger.debug("Order " + words[3] + " completed successfully\n");
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"ID\"");
+                    logger.error("Please add \"ID\"");
                 } catch (OrderNotFoundException | OrderAlreadyCompletedException e) {
-                    System.err.println(e.getMessage());
+                    logger.error(e.getMessage());
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect amount, please state a digit");
+                    logger.error("Incorrect amount, please state a digit");
                 }
                 break;
             case "get":
                 try {
-                    System.out.println(orderService.getOrderById(Integer.parseInt(words[3])));
+                    logger.info(orderService.getOrderById(Integer.parseInt(words[3])));
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"ID\"");
+                    logger.error("Please add \"ID\"");
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect order's ID number");
+                    logger.error("Incorrect order's ID number");
                 } catch (OrderNotFoundException e) {
-                    System.err.println(e.getMessage());
+                    logger.error(e.getMessage());
                 }
                 break;
 
             case "printlist":
                 try {
-                    System.out.println(orderService.getSortedOrders(words[3]));
+                    logger.info(orderService.getSortedOrders(words[3]));
                 } catch (IndexOutOfBoundsException e) {
-                    System.err.println("Please add \"type 1-5\"");
+                    logger.error("Please add \"type 1-5\"");
                 } catch (NumberFormatException e) {
-                    System.err.println("Incorrect sort type, please state actual number");
+                    logger.error("Incorrect sort type, please state actual number");
                 }
                 break;
 
             default:
-                System.out.println("Unexpected value: " + words[1]);
+                logger.warn("Unexpected value: " + words[1]);
                 break;
         }
     }
@@ -261,21 +258,21 @@ public class ConsoleProcessor {
     //Typical commands examples
     public static void getHelp(String[] words) {
         if (words.length < 2) {
-            System.out.println("Command structure: \"object action arguments\"");
-            System.out.println("Objects: Repairer, Garage, Order");
-            System.out.println("For object commands, print \"help object\", for example: \"help repairer\"\n");
+            logger.info("Command structure: \"object action arguments\n" +
+                    "\tObjects: Repairer, Garage, Order\n" +
+                    "\tFor object commands, print \"help object\", for example: \"help repairer\"\n");
         } else if (words[0].equals("help") && words[1].equals("repairer")) {
-            System.out.printf("Object Repairer, actions:  add name, remove id, printlist\n" +
+            logger.info("Object Repairer, actions:  add name, remove id, printlist\n" +
                     "\tExample: Repairer add Piter\n" +
                     "\tExample: Repairer remove 2\n" +
                     "\tExample: Repairer printlist\n");
         } else if (words[0].equals("help") && words[1].equals("garage")) {
-            System.out.printf("Object Garage, actions:  add, remove id, printlist\n" +
+            logger.info("Object Garage, actions:  add, remove id, printlist\n" +
                     "\tExample: Garage add\n" +
                     "\tExample: Garage remove 2\n" +
                     "\tExample: Garage printlist\n");
         } else if (words[0].equals("help") && words[1].equals("order")) {
-            System.out.printf("Object Order, actions:  create cost amount, remove id number," +
+            logger.info("Object Order, actions:  create cost amount, remove id number," +
                     " assign repairer id number, get id number, printlist type number\n" +
                     "\tExample: Order create cost 100\n" +
                     "\tExample: Order remove id 3\n" +
@@ -285,7 +282,7 @@ public class ConsoleProcessor {
                     "\tExample: Order get id 4\n" +
                     "\tExample: Order printlist sort 1\n");
         } else {
-            System.out.println("Unexpected value: " + words[1]);
+            logger.warn("Unexpected value: " + words[1]);
         }
     }
 }
