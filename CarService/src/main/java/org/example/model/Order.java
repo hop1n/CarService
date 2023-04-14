@@ -25,15 +25,6 @@ public class Order {
         this.inProgress = true;
     }
 
-    public Order(GarageSlot garageSlot, int cost, boolean inProgress, LocalDate creationDate, LocalDate completionDate, int id) {
-        this.garageSlot = garageSlot;
-        this.cost = cost;
-        this.inProgress = inProgress;
-        this.creationDate = creationDate;
-        this.completionDate = completionDate;
-        this.id = id;
-    }
-
     public void addRepair(Repairer repairer) {
         repairers.add(repairer);
     }
