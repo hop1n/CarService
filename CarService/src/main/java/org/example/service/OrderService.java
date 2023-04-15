@@ -7,10 +7,7 @@ import org.example.model.Repairer;
 
 import java.text.MessageFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderService {
@@ -39,7 +36,7 @@ public class OrderService {
 
     public void removeOrder(int id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
-            throw new OrderNotFoundException(MessageFormat.format("There is no order with ID {0}", id));
+            throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
         }
     }
 
@@ -71,7 +68,6 @@ public class OrderService {
     public void completeOrder(int id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny()
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d".formatted(id)));
-
         if (!order.isInProgress()) {
             throw new OrderAlreadyCompletedException("Order with ID%d already completed".formatted(id));
         }
@@ -93,10 +89,6 @@ public class OrderService {
     }
 
     public List<Order> getSortedOrders(String field) {
-        if (field == null) {
-            throw new IncorrectSortTypeException("Sort type cannot be null");
-        }
-
         try {
             switch (Fields.valueOf(field.toUpperCase())) {
                 case CREATION:
