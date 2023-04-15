@@ -1,1 +1,9 @@
 .idea/
+*.iml
+*.iws
+*.xml
+/target/surefire-reports/org.example.service.GarageServiceTest.txt
+/target/surefire-reports/org.example.service.OrderServiceTest.txt
+/target/surefire-reports/org.example.service.RepairerServiceTest.txt
+/target/classes/org/example/service/OrderService$1.class
+/target/classes/org/example/service/OrderService$Fields.class
