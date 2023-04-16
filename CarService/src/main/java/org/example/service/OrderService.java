@@ -35,18 +35,16 @@ public class OrderService {
 
     public void removeOrder(int id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
-            //TODO: Use MessageFormat or String.formatted instead of string concatination
-            throw new OrderNotFoundException(MessageFormat.format("There is no order with ID {0}", id));
+            throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
         }
     }
 
-    public void assignRepairer(Order order, int ... ids) {
+    public void assignRepairer(Order order, int... ids) {
         for (int id : ids) {
             if (repairerService.getById(id).getIsAvailable()) {
                 order.addRepair(repairerService.getById(id));
                 repairerService.getById(id).setIsAvailable(false);
-                //TODO: Use MessageFormat or String.formatted instead of string concatination
-            } else throw new RepairerNotAvailableException("Repairer with ID " + id + " is unavailable");
+            } else throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(id));
         }
     }
 
@@ -57,17 +55,14 @@ public class OrderService {
             }
             order.setGarageSlot(garageService.getById(garageId));
             garageService.getById(garageId).setAvailable(false);
-            //TODO: Use MessageFormat or String.formatted instead of string concatination
-        } else throw new GarageNotAvailableException("Garage with ID " + garageId + " is unavailable");
+        } else throw new GarageNotAvailableException("Garage with ID%d is unavailable".formatted(garageId));
     }
 
     public void completeOrder(int id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny()
-                //TODO: Use MessageFormat or String.formatted instead of string concatination
-                .orElseThrow(() -> new OrderNotFoundException("There is no order with ID " + id));
+                .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d".formatted(id)));
         if (!order.isInProgress()) {
-            //TODO: Use MessageFormat or String.formatted instead of string concatination
-            throw new OrderAlreadyCompletedException("Order with ID " + id + " already completed");
+            throw new OrderAlreadyCompletedException("Order with ID%d already completed".formatted(id));
         }
         order.setInProgress(false);
         Collection<Repairer> repairers = order.getRepairers();
@@ -79,10 +74,6 @@ public class OrderService {
     }
 
     public List<Order> getSortedOrders(String field) {
-        if (field == null) {
-            throw new IncorrectSortTypeException("Sort type cannot be null");
-        }
-
         try {
             switch (Fields.valueOf(field.toUpperCase())) {
                 case CREATION:
@@ -104,17 +95,14 @@ public class OrderService {
                     return orders;
             }
             return orders;
-        }
-        catch (IllegalArgumentException ex) {
-            //TODO: Use MessageFormat or String.formatted instead of string concatination
-            throw new IncorrectSortTypeException("There is no such sort type as: " + field);
+        } catch (IllegalArgumentException ex) {
+            throw new IncorrectSortTypeException("There is no such sort type as: %s".formatted(field));
         }
     }
 
     public Order getOrderById(int id) {
         return orders.stream().filter(order -> order.getId() == id).findAny()
-                //TODO: Use MessageFormat or String.formatted instead of string concatination
-                .orElseThrow(() -> new OrderNotFoundException("There is no order with ID " + id));
+                .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d ".formatted(id)));
     }
 
     public List<Order> getOrders() {

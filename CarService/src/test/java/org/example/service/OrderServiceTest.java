@@ -9,16 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OrderServiceTest {
 
-    private static final Order ORDER1 = new Order(100);
+    private static final Order ORDER1 = new Order(90);
     private static final Order ORDER2 = new Order(180);
     private static final Order ORDER3 = new Order(150);
     private static final Repairer REPAIRER1 = new Repairer("Peter");
@@ -55,7 +57,7 @@ public class OrderServiceTest {
 
     @Test
     void throwExceptionGetOrderSorterTest() {
-        assertThrows(IncorrectSortTypeException.class, () -> orderService.getSortedOrders("wrong value")); // when null - dos not work
+        assertThatThrownBy(() -> orderService.getSortedOrders("wrong value")).isInstanceOf(IncorrectSortTypeException.class); // when null - dos not work
     }
 
     @Test
@@ -66,7 +68,7 @@ public class OrderServiceTest {
 
     @Test
     void removeOrderNotExistingEntityTest() {
-        assertThrows(OrderNotFoundException.class, () -> orderService.removeOrder(100500));
+        assertThatThrownBy(() -> orderService.removeOrder(100500)).isInstanceOf(OrderNotFoundException.class);
     }
 
     @Test
@@ -89,20 +91,20 @@ public class OrderServiceTest {
     void assignGarageSlotExcTest() {
         garageService.add(GARAGE_SLOT1);
         GARAGE_SLOT1.setAvailable(false);
-        assertThrows(GarageNotAvailableException.class, () -> orderService.assignGarageSlot(ORDER2,
-                GARAGE_SLOT1.getId()));
+        assertThatThrownBy(() -> orderService.assignGarageSlot(ORDER2,
+                GARAGE_SLOT1.getId())).isInstanceOf(GarageNotAvailableException.class);
     }
 
     @Test
     void assignRepairerExcTest() {
         repairerService.add(REPAIRER5);
         REPAIRER5.setIsAvailable(false);
-        assertThrows(RepairerNotAvailableException.class, () -> orderService.assignRepairer(ORDER2,
-                REPAIRER5.getId()));
+        assertThatThrownBy(() -> orderService.assignRepairer(ORDER2,
+                REPAIRER5.getId())).isInstanceOf(RepairerNotAvailableException.class);
     }
 
     @Test
-    void completeOrder() {
+    void completeOrderTest() {
         garageService.add(GARAGE_SLOT);
         orderService.assignGarageSlot(ORDER2, GARAGE_SLOT.getId());
         orderService.completeOrder(ORDER2.getId());
@@ -115,17 +117,46 @@ public class OrderServiceTest {
     @Test
     void addOrderExcTest() {
         Order order = new Order(-1);
-        assertThrows(IncorrectCostException.class, () -> orderService.addOrder(order));
+        assertThatThrownBy(() -> orderService.addOrder(order)).isInstanceOf(IncorrectCostException.class);
     }
 
     @Test
     void completeOrderExcTest() {
         ORDER1.setInProgress(false);
-        assertThrows(OrderAlreadyCompletedException.class, () -> orderService.completeOrder(ORDER1.getId()));
+        assertThatThrownBy(() -> orderService.completeOrder(ORDER1.getId())).isInstanceOf(OrderAlreadyCompletedException.class);
     }
 
     @Test
-    void getSortedOrders() {
+    void getOrderCountTest(){
+        assertThat(orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
+    }
+
+    @Test
+    void setOrderTest(){
+        List <Order> ordersForAdded = new ArrayList<>();
+        Order order4 = new Order();
+        Order order5 = new Order();
+        ordersForAdded.add(order4);
+        ordersForAdded.add(order5);
+        orderService.setOrders(ordersForAdded);
+
+        assertThat(orderService.getOrders().size()).isEqualTo(2);
+    }
+
+    @Test
+    void setOrderCountTest(){
+        List <Order> ordersForAdded = new ArrayList<>();
+        Order order4 = new Order();
+        Order order5 = new Order();
+        ordersForAdded.add(order4);
+        ordersForAdded.add(order5);
+        orderService.setOrders(ordersForAdded);
+        orderService.setOrderCount(2);
+        assertThat(orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
+    }
+
+    @Test
+    void getSortedOrdersSortingTest() {
         ORDER1.setInProgress(false);
         ORDER1.setCreationDate(LocalDate.parse("2023-04-07"));
         ORDER1.setCompletionDate(LocalDate.parse("2023-04-09"));
@@ -133,6 +164,7 @@ public class OrderServiceTest {
         ORDER2.setCompletionDate(LocalDate.parse("2023-04-08"));
         ORDER3.setCreationDate(LocalDate.parse("2023-04-09"));
         ORDER3.setCompletionDate(LocalDate.parse("2023-04-11"));
+        ORDER1.setCost(100);
         repairerService.add(REPAIRER1);
         repairerService.add(REPAIRER2);
         repairerService.add(REPAIRER3);
@@ -155,18 +187,18 @@ public class OrderServiceTest {
                             "Order{id=3,garageSlot=null,repairers=[\n" +
                             "Repairer{name='Peter',isAvailable=false,id=1,}],cost=150,inProgress=true,creationDate=2023-04-09,completionDate=2023-04-11}]");
                 },
-                () -> {
-                    List<Order> ordersSorted;
-                    ordersSorted = orderService.getSortedOrders("PROGRESS");
+        () -> {
+            List<Order> ordersSorted;
+            ordersSorted = orderService.getSortedOrders("PROGRESS");
 
-                    assertThat(ordersSorted.toString()).isEqualTo("[\n" +
-                            "Order{id=2,garageSlot=null,repairers=[\n" +
-                            "Repairer{name='Kolya',isAvailable=false,id=3,}],cost=180,inProgress=true,creationDate=2023-04-06,completionDate=2023-04-08}, \n" +
-                            "Order{id=3,garageSlot=null,repairers=[\n" +
-                            "Repairer{name='Peter',isAvailable=false,id=1,}],cost=150,inProgress=true,creationDate=2023-04-09,completionDate=2023-04-11}, \n" +
-                            "Order{id=1,garageSlot=null,repairers=[\n" +
-                            "Repairer{name='Ivan',isAvailable=false,id=2,}],cost=100,inProgress=false,creationDate=2023-04-07,completionDate=2023-04-09}]");
-                },
+            assertThat(ordersSorted.toString()).isEqualTo("[\n" +
+                    "Order{id=2,garageSlot=null,repairers=[\n" +
+                    "Repairer{name='Kolya',isAvailable=false,id=3,}],cost=180,inProgress=true,creationDate=2023-04-06,completionDate=2023-04-08}, \n" +
+                    "Order{id=3,garageSlot=null,repairers=[\n" +
+                    "Repairer{name='Peter',isAvailable=false,id=1,}],cost=150,inProgress=true,creationDate=2023-04-09,completionDate=2023-04-11}, \n" +
+                    "Order{id=1,garageSlot=null,repairers=[\n" +
+                    "Repairer{name='Ivan',isAvailable=false,id=2,}],cost=100,inProgress=false,creationDate=2023-04-07,completionDate=2023-04-09}]");
+        },
                 () -> {
                     List<Order> ordersSorted;
                     ordersSorted = orderService.getSortedOrders("COST");
@@ -215,7 +247,9 @@ public class OrderServiceTest {
                             "Order{id=2,garageSlot=null,repairers=[\n" +
                             "Repairer{name='Kolya',isAvailable=false,id=3,}],cost=180,inProgress=true,creationDate=2023-04-06,completionDate=2023-04-08}]");
                 }
-        );
+//
+               );
+
     }
 
 
