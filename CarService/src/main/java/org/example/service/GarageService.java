@@ -25,7 +25,6 @@ public class GarageService implements Service<GarageSlot> {
         garageCount = 0;
     }
 
-    //TODO: Split this method
     public void initializePropertyFromFile(){
         Properties properties = new Properties();
         try {
