@@ -2,13 +2,17 @@ package org.example.service;
 
 import org.example.exception.AssignDeprecatedMethod;
 import org.example.exception.GarageNotFoundException;
+import org.example.exception.PropertyNotFound;
 import org.example.model.GarageSlot;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 
 public class GarageServiceTest {
@@ -19,47 +23,87 @@ public class GarageServiceTest {
     GarageSlot garageSlot3 = new GarageSlot();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         garageService = new GarageService();
-        garageSlot1.setId(1);
-        garageSlot2.setId(2);
+        garageService.setChangeable(true);
         garageSlot2.setAvailable(false);
-        garageSlot3.setId(3);
-        garageSlot2.setAvailable(false);
-        garageSlots.add(garageSlot1);
-        garageSlots.add(garageSlot2);
-        garageSlots.add(garageSlot3);
-        garageService.setGarageSlots(garageSlots);
+        garageService.add(garageSlot1);
+        garageService.add(garageSlot2);
+        garageService.add(garageSlot3);
     }
 
     @Test
-    public void addGarageSlot() {
+    void getGarageCount(){
+        Assertions.assertEquals(3, garageService.getGarageCount());
+    }
+
+    @Test
+    void getGarageSlots(){
+        Assertions.assertEquals("[\n" +
+                "GarageSlot{id=1,isAvailable=true}, \n" +
+                "GarageSlot{id=2,isAvailable=false}, \n" +
+                "GarageSlot{id=3,isAvailable=true}]", garageService.getGarageSlots().toString());
+    }
+    @Test
+    void addGarageSlot() {
         GarageSlot garageSlot4 = new GarageSlot();
         garageService.add(garageSlot4);
         Assertions.assertEquals(4, garageService.getGarageSlots().size());
         Assertions.assertTrue(garageService.getGarageSlots().contains(garageSlot4));
-        Assertions.assertEquals(garageService.toString(), "GarageService{garageSlots=[\n" +
+        Assertions.assertEquals("GarageService{garageSlots=[\n" +
                 "GarageSlot{id=1,isAvailable=true}, \n" +
                 "GarageSlot{id=2,isAvailable=false}, \n" +
                 "GarageSlot{id=3,isAvailable=true}, \n" +
-                "GarageSlot{id=4,isAvailable=true}]}");
+                "GarageSlot{id=4,isAvailable=true}]}", garageService.toString());
     }
 
     @Test
-    public void addGarageSlotException(){
+    void initializePropertyFromFileException(){
+        GarageService garageService2 = new GarageService("non-existent_file_path");
+        Assertions.assertThrows(PropertyNotFound.class, () -> garageService2.initializePropertyFromFile());
+    }
+
+    @Test
+    void initializePropertyFromFile() throws IOException {
+        Properties properties = new Properties();
+        String path = "../CarService/src/main/resources/application.properties";
+        FileReader fileReader = new FileReader(path);
+        properties.load(fileReader);
+        boolean changeable = properties.getProperty("changeable_number_of_garages").equals("true");
+        GarageService garageService2 = new GarageService("../CarService/src/main/resources/application.properties");
+        garageService2.initializePropertyFromFile();
+        Assertions.assertEquals(garageService2.getChangeable(), changeable);
+    }
+
+    @Test
+    void setGarageSlots(){
+        garageSlots.add(garageSlot1);
+        garageSlots.add(garageSlot2);
+        garageSlots.add(garageSlot3);
+        garageService.setGarageSlots(garageSlots);
+        Assertions.assertEquals(garageService.getGarageSlots(), garageSlots);
+    }
+
+    @Test
+    void setGarageCount(){
+        garageService.setGarageCount(5);
+        Assertions.assertEquals(garageService.getGarageCount(), 5);
+    }
+    @Test
+    void addGarageSlotException(){
         GarageSlot garageSlot4 = new GarageSlot();
         garageService.setChangeable(false);
         Assertions.assertThrows(AssignDeprecatedMethod.class, () -> garageService.add(garageSlot4));
     }
 
     @Test
-    public void getById() {
+    void getById() {
         GarageSlot garageToReturn = garageService.getById(2);
         Assertions.assertEquals(garageService.getGarageSlots().get(1), garageToReturn);
     }
 
     @Test
-    public void getByIdGarageNotFoundException() throws GarageNotFoundException {
+    void getByIdGarageNotFoundException() throws GarageNotFoundException {
         Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.getById(10));
     }
 

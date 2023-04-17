@@ -12,11 +12,12 @@ import java.io.InputStreamReader;
 public class ConsoleProcessor {
 
     RepairerService repairerService = new RepairerService();
-    GarageService garageService = new GarageService("src/application.properties");
+    GarageService garageService = new GarageService("CarService/src/main/resources/application.properties");
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
     public void initLogs() {
+        garageService.initializePropertyFromFile();
         try {
             readFileDataService.readFromFile();
         } catch (JsonParsingException e) {

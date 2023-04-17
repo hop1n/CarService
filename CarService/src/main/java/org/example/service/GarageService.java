@@ -16,7 +16,6 @@ public class GarageService implements Service<GarageSlot> {
 
     public GarageService(String path) {
         this.path = path;
-        initializePropertyFromFile();
         garageCount = 0;
     }
 
@@ -26,7 +25,6 @@ public class GarageService implements Service<GarageSlot> {
         garageCount = 0;
     }
 
-    //TODO: Split this method
     public void initializePropertyFromFile(){
         Properties properties = new Properties();
         try {
