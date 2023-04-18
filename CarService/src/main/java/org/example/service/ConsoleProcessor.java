@@ -195,7 +195,7 @@ public class ConsoleProcessor {
                         System.out.println("Cannot recognize assignment");
                     }
                 } catch (GarageNotAvailableException | RepairerNotAvailableException | GarageNotFoundException |
-                         RepairerNotFoundException e) {
+                         RepairerNotFoundException | OrderNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Incorrect command: not enough arguments");
@@ -211,7 +211,8 @@ public class ConsoleProcessor {
                     System.out.printf("Order %s completed successfully\n", words[3]);
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add \"ID\"");
-                } catch (OrderNotFoundException | OrderAlreadyCompletedException e) {
+                } catch (OrderNotFoundException | OrderAlreadyCompletedException
+                        | RepairerIsNotAssignedException | GarageIsNotAssignedException e) {
                     System.err.println(e.getMessage());
                 } catch (NumberFormatException e) {
                     System.err.println("Incorrect amount, please state a digit");
