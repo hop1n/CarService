@@ -68,7 +68,7 @@ public class OrderServiceTest {
 
     @Test
     void removeOrderNotExistingEntityTest() {
-        assertThatThrownBy(() -> orderService.removeOrder(100500)).isInstanceOf(OrderNotFoundException.class);
+        assertThatThrownBy(() -> orderService.removeOrder(100500L)).isInstanceOf(OrderNotFoundException.class);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class OrderServiceTest {
         repairerService.add(REPAIRER4);
         orderService.assignRepairer(ORDER3, REPAIRER4.getId());
 
-        assertThat(orderService.getOrders().get(ORDER3.getId() - 1).getRepairers()).contains(REPAIRER4);
+        assertThat(orderService.getOrders().get((int) (ORDER3.getId() - 1)).getRepairers()).contains(REPAIRER4);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class OrderServiceTest {
         garageService.add(GARAGE_SLOT);
         orderService.assignGarageSlot(ORDER3, GARAGE_SLOT.getId());
 
-        assertThat(orderService.getOrders().get(ORDER3.getId() - 1).getGarageSlot()).isEqualTo(GARAGE_SLOT);
+        assertThat(orderService.getOrders().get((int) (ORDER3.getId() - 1)).getGarageSlot()).isEqualTo(GARAGE_SLOT);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class OrderServiceTest {
 
     @Test
     void getOrderCountTest(){
-        assertThat(orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
+        assertThat((long)orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class OrderServiceTest {
         ordersForAdded.add(order4);
         ordersForAdded.add(order5);
         orderService.setOrders(ordersForAdded);
-        orderService.setOrderCount(2);
-        assertThat(orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
+        orderService.setOrderCount(2L);
+        assertThat((long)orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
     }
 
     @Test

@@ -11,7 +11,7 @@ public class Order {
     private boolean inProgress;
     private LocalDate creationDate;
     private LocalDate completionDate;
-    private int id;
+    private Long id;
 
     public Order() {
         this.creationDate = LocalDate.now();
@@ -73,11 +73,11 @@ public class Order {
         this.completionDate = completionDate;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -7,10 +7,10 @@ import java.util.List;
 
 public class GarageServiceDto {
 
-    private int garageCount;
+    private Long garageCount;
     private List<GarageSlot> garageSlots;
 
-    public GarageServiceDto(int garageCount, List<GarageSlot> garageSlots) {
+    public GarageServiceDto(Long garageCount, List<GarageSlot> garageSlots) {
         this.garageCount = garageCount;
         this.garageSlots = garageSlots;
     }
@@ -27,7 +27,7 @@ public class GarageServiceDto {
         garageService.setGarageCount(this.garageCount);
     }
 
-    public int getGarageCount() {
+    public Long getGarageCount() {
         return garageCount;
     }
 
@@ -35,7 +35,7 @@ public class GarageServiceDto {
         return garageSlots;
     }
 
-    public void setGarageCount(int garageCount) {
+    public void setGarageCount(Long garageCount) {
         this.garageCount = garageCount;
     }
 

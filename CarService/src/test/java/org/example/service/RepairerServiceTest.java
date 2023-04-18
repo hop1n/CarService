@@ -25,7 +25,7 @@ public class RepairerServiceTest {
 
     @Test
     void getById() {
-        Assert.assertEquals(repairer1, repairerService.getById(1));
+        Assert.assertEquals(repairer1, repairerService.getById(1L));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class RepairerServiceTest {
 
     @Test
     void remove() {
-        repairerService.remove(3);
+        repairerService.remove(3L);
         Assert.assertEquals(2, repairerService.getRepairers().size());
         Assert.assertFalse(repairerService.getRepairers().contains(repairer3));
     }
@@ -50,7 +50,7 @@ public class RepairerServiceTest {
     @Test
     void getByIdBadScenario() {
         RepairerNotFoundException exception = Assertions.assertThrows(
-                RepairerNotFoundException.class, () -> repairerService.getById(123)
+                RepairerNotFoundException.class, () -> repairerService.getById(123L)
         );
         Assert.assertEquals("there is no repairer with id: 123", exception.getMessage());
     }
@@ -58,7 +58,7 @@ public class RepairerServiceTest {
     @Test
     void removeBadScenario() {
         RepairerNotFoundException exception = Assertions.assertThrows(
-                RepairerNotFoundException.class, () -> repairerService.remove(321)
+                RepairerNotFoundException.class, () -> repairerService.remove(321L)
         );
         Assert.assertEquals("there is no repairer with id: 321", exception.getMessage());
     }

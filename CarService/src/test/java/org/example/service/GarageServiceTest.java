@@ -86,7 +86,7 @@ public class GarageServiceTest {
 
     @Test
     void setGarageCount(){
-        garageService.setGarageCount(5);
+        garageService.setGarageCount(5L);
         Assertions.assertEquals(garageService.getGarageCount(), 5);
     }
     @Test
@@ -98,35 +98,35 @@ public class GarageServiceTest {
 
     @Test
     void getById() {
-        GarageSlot garageToReturn = garageService.getById(2);
+        GarageSlot garageToReturn = garageService.getById(2L);
         Assertions.assertEquals(garageService.getGarageSlots().get(1), garageToReturn);
     }
 
     @Test
     void getByIdGarageNotFoundException() throws GarageNotFoundException {
-        Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.getById(10));
+        Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.getById(10L));
     }
 
     @Test
     void remove() {
         int oldSize = garageService.getGarageSlots().size();
         if (garageService.getChangeable()) {
-            garageService.remove(1);
+            garageService.remove(1L);
             Assertions.assertEquals(oldSize - 1, garageService.getGarageSlots().size());
             Assertions.assertFalse(garageService.getGarageSlots().contains(garageSlot1));
         } else {
-            Assertions.assertThrows(AssignDeprecatedMethod.class, () -> garageService.remove(1));
+            Assertions.assertThrows(AssignDeprecatedMethod.class, () -> garageService.remove(1L));
         }
     }
 
     @Test
     void removeAssignDeprecatedMethodException(){
         garageService.setChangeable(false);
-        Assertions.assertThrows(AssignDeprecatedMethod.class, () -> garageService.remove(1));
+        Assertions.assertThrows(AssignDeprecatedMethod.class, () -> garageService.remove(1L));
     }
 
     @Test
     void removeGarageNotFoundException() {
-        Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.remove(10));
+        Assertions.assertThrows(GarageNotFoundException.class, () -> garageService.remove(10L));
     }
 }

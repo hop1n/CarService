@@ -19,13 +19,13 @@ public class OrderService {
 
     private final RepairerService repairerService;
     private final GarageService garageService;
-    private int orderCount;
+    private Long orderCount;
     private List<Order> orders = new ArrayList<>();
 
     public OrderService(RepairerService repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
-        orderCount = 0;
+        orderCount = 0L;
     }
 
     public void addOrder(Order order) {
@@ -35,14 +35,14 @@ public class OrderService {
         order.setId(orderCount);
     }
 
-    public void removeOrder(int id) {
+    public void removeOrder(Long id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
             throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
         }
     }
 
-    public void assignRepairer(Order order, int... ids) {
-        for (int id : ids) {
+    public void assignRepairer(Order order, Long... ids) {
+        for (Long id : ids) {
             if (repairerService.getById(id).getIsAvailable()) {
                 order.addRepair(repairerService.getById(id));
                 repairerService.getById(id).setIsAvailable(false);
@@ -50,7 +50,7 @@ public class OrderService {
         }
     }
 
-    public void assignGarageSlot(Order order, int garageId) {
+    public void assignGarageSlot(Order order, Long garageId) {
         if (garageService.getById(garageId).isAvailable()) {
             if (order.getGarageSlot() != null) {
                 order.getGarageSlot().setAvailable(true); // освобождает гараж, который уже был назначен этому заказу
@@ -60,7 +60,7 @@ public class OrderService {
         } else throw new GarageNotAvailableException("Garage with ID%d is unavailable".formatted(garageId));
     }
 
-    public void completeOrder(int id) {
+    public void completeOrder(Long id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny()
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d".formatted(id)));
         if (!order.isInProgress()) {
@@ -93,7 +93,7 @@ public class OrderService {
                     return orders.stream().sorted(Comparator.comparing(Order::isInProgress))
                             .collect(Collectors.toList());
                 case REPAIRER:
-                    orders.sort(Comparator.comparingInt(o -> o.getRepairers().iterator().next().getId()));
+                    orders.sort(Comparator.comparingLong(o -> o.getRepairers().iterator().next().getId()));
                     return orders;
             }
             return orders;
@@ -102,7 +102,7 @@ public class OrderService {
         }
     }
 
-    public Order getOrderById(int id) {
+    public Order getOrderById(Long id) {
         return orders.stream().filter(order -> order.getId() == id).findAny()
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d ".formatted(id)));
     }
@@ -115,11 +115,11 @@ public class OrderService {
         this.orders = orders;
     }
 
-    public int getOrderCount() {
+    public Long getOrderCount() {
         return orderCount;
     }
 
-    public void setOrderCount(int orderCount) {
+    public void setOrderCount(Long orderCount) {
         this.orderCount = orderCount;
     }
 }

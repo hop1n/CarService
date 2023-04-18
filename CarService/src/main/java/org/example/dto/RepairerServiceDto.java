@@ -7,10 +7,10 @@ import java.util.Collection;
 
 public class RepairerServiceDto {
 
-    private int repairersCount;
+    private Long repairersCount;
     private Collection<Repairer> repairers;
 
-    public RepairerServiceDto(int repairersCount, Collection<Repairer> repairers) {
+    public RepairerServiceDto(Long repairersCount, Collection<Repairer> repairers) {
         this.repairersCount = repairersCount;
         this.repairers = repairers;
     }
@@ -27,7 +27,7 @@ public class RepairerServiceDto {
         repairerService.setRepairersCount(this.repairersCount);
     }
 
-    public int getRepairersCount() {
+    public Long getRepairersCount() {
         return repairersCount;
     }
 
@@ -35,7 +35,7 @@ public class RepairerServiceDto {
         return repairers;
     }
 
-    public void setRepairersCount(int repairersCount) {
+    public void setRepairersCount(Long repairersCount) {
         this.repairersCount = repairersCount;
     }
 

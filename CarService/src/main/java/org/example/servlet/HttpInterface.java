@@ -5,7 +5,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.example.model.Repairer;
 import org.example.service.GarageService;
 import org.example.service.OrderService;
 import org.example.service.ReadFileDataService;
@@ -46,8 +45,16 @@ public class HttpInterface {
     private void addServlets(ServletHandler servletHandler) {
         servletHandler
                 .addServletWithMapping(new ServletHolder
-                                (new ShowRepairersServlet(repairerService)),
+                                (new GetRepairersServlet(repairerService)),
                         "/get-repairers");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                                new AddRepairerServlet(repairerService)),
+                        "/add-repairer");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                        new RemoveRepairerServlet(repairerService)),
+                "/remove-repairer");
 
     }
 }
