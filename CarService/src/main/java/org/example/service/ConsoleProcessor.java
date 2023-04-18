@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 public class ConsoleProcessor {
 
     RepairerService repairerService = new RepairerService();
-    GarageService garageService = new GarageService("CarService/src/main/resources/application.properties");
+    GarageService garageService = new GarageService("src/main/resources/application.properties");
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
@@ -169,7 +169,7 @@ public class ConsoleProcessor {
                 break;
             case "remove":
                 try {
-                    orderService.removeOrder(Integer.parseInt(words[3]));
+                    orderService.removeOrder(Long.parseLong(words[3]));
                     System.out.println("Order with ID " + words[3] + " removed successfully");
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add \"order ID\"");
@@ -182,12 +182,12 @@ public class ConsoleProcessor {
             case "assign":
                 try {
                     if (words[4].equals("repairer")) {
-                        orderService.assignRepairer(orderService.getOrderById(Integer.parseInt(words[3])),
+                        orderService.assignRepairer(orderService.getOrderById(Long.parseLong(words[3])),
                                 Integer.parseInt(words[5]));
                         System.out.printf("Repairer %d assigned to Order %d successfully", Integer.parseInt(words[5]),
                                 Integer.parseInt(words[3]));
                     } else if (words[4].equals("garage")) {
-                        orderService.assignGarageSlot(orderService.getOrderById(Integer.parseInt(words[3])),
+                        orderService.assignGarageSlot(orderService.getOrderById(Long.parseLong(words[3])),
                                 Integer.parseInt(words[5]));
                         System.out.printf("Garage %d assigned to Order %d successfully", Integer.parseInt(words[5]),
                                 Integer.parseInt(words[3]));
@@ -195,7 +195,7 @@ public class ConsoleProcessor {
                         System.out.println("Cannot recognize assignment");
                     }
                 } catch (GarageNotAvailableException | RepairerNotAvailableException | GarageNotFoundException |
-                         RepairerNotFoundException e) {
+                         RepairerNotFoundException | OrderNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Incorrect command: not enough arguments");
@@ -207,11 +207,12 @@ public class ConsoleProcessor {
                 break;
             case "complete":
                 try {
-                    orderService.completeOrder(Integer.parseInt(words[3]));
+                    orderService.completeOrder(Long.parseLong(words[3]));
                     System.out.printf("Order %s completed successfully\n", words[3]);
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add \"ID\"");
-                } catch (OrderNotFoundException | OrderAlreadyCompletedException e) {
+                } catch (OrderNotFoundException | OrderAlreadyCompletedException
+                        | RepairerIsNotAssignedException | GarageIsNotAssignedException e) {
                     System.err.println(e.getMessage());
                 } catch (NumberFormatException e) {
                     System.err.println("Incorrect amount, please state a digit");
@@ -219,7 +220,7 @@ public class ConsoleProcessor {
                 break;
             case "get":
                 try {
-                    System.out.println(orderService.getOrderById(Integer.parseInt(words[3])));
+                    System.out.println(orderService.getOrderById(Long.parseLong(words[3])));
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add \"ID\"");
                 } catch (NumberFormatException e) {
