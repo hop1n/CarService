@@ -9,16 +9,19 @@ import org.example.service.GarageService;
 import org.example.service.OrderService;
 import org.example.service.ReadFileDataService;
 import org.example.service.RepairerService;
+import org.example.settings.GarageSettings;
 
 public class HttpInterface {
     private Server server;
 
     RepairerService repairerService = new RepairerService();
-    GarageService garageService = new GarageService("./src/main/resources/application.properties");
+    GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
+    GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
     public void start() {
+        garageSettings.initializeProperty();
         readFileDataService.readFromFile();
         configure();
         try {
@@ -47,6 +50,54 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder
                                 (new GetRepairersServlet(repairerService)),
                         "/get-repairers");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetGarageSlotsServlet(garageService)),
+                        "/garageslots");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new AddGarageSlotServlet(garageService)),
+                        "/garageslots/add");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new RemoveGarageSlotServlet(garageService)),
+                        "/garageslots/remove/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetGarageSlotByIdServlet(garageService)),
+                        "/garageslots/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetOrderByIdServlet(orderService)),
+                        "/get-order-by-id/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new CreateOrderServlet(orderService)),
+                        "/create-order");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new RemoveOrderServlet(orderService)),
+                        "/remove-order");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetOrdersServlet(orderService)),
+                        "/get-orders");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetSortedOrdersServlet(orderService)),
+                        "/get-sorted-orders");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new AssignRepairerOrderServlet(orderService)),
+                        "/orders/assign/repairer");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new AssignGarageOrderServlet(orderService)),
+                        "/orders/assign/garage");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new CompleteOrderServlet(orderService)),
+                        "/orders/complete");
         servletHandler
                 .addServletWithMapping(new ServletHolder(
                                 new AddRepairerServlet(repairerService)),

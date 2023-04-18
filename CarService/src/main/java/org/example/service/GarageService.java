@@ -2,44 +2,28 @@ package org.example.service;
 
 import org.example.exception.AssignDeprecatedMethod;
 import org.example.exception.GarageNotFoundException;
-import org.example.exception.PropertyNotFound;
 import org.example.model.GarageSlot;
+import org.example.settings.GarageSettings;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class GarageService implements Service<GarageSlot> {
     private List<GarageSlot> garageSlots = new ArrayList<>();
-    private final String path;
-    private boolean changeable;
+    private final GarageSettings garageSettings;
     private Long garageCount;
 
-    public GarageService(String path) {
-        this.path = path;
+    public GarageService(GarageSettings garageSettings) {
+        this.garageSettings = garageSettings;
+        this.garageSettings.initializeProperty();
         garageCount = 0L;
-    }
-
-    public GarageService() {
-        this.path = "";
-        this.changeable = true;
-        garageCount = 0L;
-    }
-
-    public void initializePropertyFromFile(){
-        Properties properties = new Properties();
-        try {
-            FileReader fileReader = new FileReader(path);
-            properties.load(fileReader);
-        } catch (IOException e) {
-            throw new PropertyNotFound("Property file does not exist");
-        }
-        this.changeable = properties.getProperty("changeable_number_of_garages").equals("true");
     }
 
     @Override
     public boolean remove(Long id) {
-        if (changeable){
-            boolean isRemoved = garageSlots.removeIf(slot -> slot.getId() == id);
+        if (garageSettings.isChangeable()){
+            boolean isRemoved = garageSlots.removeIf(slot -> slot.getId().equals(id));
             if (!isRemoved) {
                 throw new GarageNotFoundException("Garage with such id not found");
             }
@@ -51,7 +35,7 @@ public class GarageService implements Service<GarageSlot> {
 
     @Override
     public GarageSlot getById(Long id) {
-        return garageSlots.stream().filter(slot -> slot.getId() == id).findFirst()
+        return garageSlots.stream().filter(slot -> slot.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new GarageNotFoundException("Garage with such id not found"));
     }
 
@@ -83,16 +67,8 @@ public class GarageService implements Service<GarageSlot> {
                 .orElse(0L);
     }
 
-    public void setChangeable(boolean changeable) {
-        this.changeable = changeable;
-    }
-
-    public boolean getChangeable() {
-        return changeable;
-    }
-
     public GarageSlot add(GarageSlot garageSlot){
-        if (changeable) {
+        if (garageSettings.isChangeable()) {
             garageSlots.add(garageSlot);
             garageCount++;
             garageSlot.setId(garageCount);

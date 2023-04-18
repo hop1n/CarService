@@ -4,6 +4,7 @@ import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
+import org.example.settings.GarageSettings;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +13,13 @@ import java.io.InputStreamReader;
 public class ConsoleProcessor {
 
     RepairerService repairerService = new RepairerService();
-    GarageService garageService = new GarageService("./src/main/resources/application.properties");
+    GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
+    GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
     public void initLogs() {
-        garageService.initializePropertyFromFile();
+        garageSettings.initializeProperty();
         try {
             readFileDataService.readFromFile();
         } catch (JsonParsingException e) {
@@ -195,7 +197,7 @@ public class ConsoleProcessor {
                         System.out.println("Cannot recognize assignment");
                     }
                 } catch (GarageNotAvailableException | RepairerNotAvailableException | GarageNotFoundException |
-                         RepairerNotFoundException e) {
+                         RepairerNotFoundException | OrderNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Incorrect command: not enough arguments");
@@ -211,7 +213,8 @@ public class ConsoleProcessor {
                     System.out.printf("Order %s completed successfully\n", words[3]);
                 } catch (IndexOutOfBoundsException e) {
                     System.err.println("Please add \"ID\"");
-                } catch (OrderNotFoundException | OrderAlreadyCompletedException e) {
+                } catch (OrderNotFoundException | OrderAlreadyCompletedException
+                        | RepairerIsNotAssignedException | GarageIsNotAssignedException e) {
                     System.err.println(e.getMessage());
                 } catch (NumberFormatException e) {
                     System.err.println("Incorrect amount, please state a digit");

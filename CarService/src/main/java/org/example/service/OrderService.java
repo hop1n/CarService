@@ -28,29 +28,32 @@ public class OrderService {
         orderCount = 0L;
     }
 
-    public void addOrder(Order order) {
+    public Order addOrder(Order order) {
         if (order.getCost() < 0) throw new IncorrectCostException("Cost shouldn't be less then 0");
         orders.add(order);
         orderCount++;
         order.setId(orderCount);
+        return order;
     }
 
-    public void removeOrder(Long id) {
+    public boolean removeOrder(Long id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
             throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
         }
+        return true;
     }
 
-    public void assignRepairer(Order order, Long... ids) {
+    public Order  assignRepairer(Order order, Long... ids) {
         for (Long id : ids) {
             if (repairerService.getById(id).getIsAvailable()) {
                 order.addRepair(repairerService.getById(id));
                 repairerService.getById(id).setIsAvailable(false);
             } else throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(id));
         }
+        return order;
     }
 
-    public void assignGarageSlot(Order order, Long garageId) {
+    public Order assignGarageSlot(Order order, Long garageId) {
         if (garageService.getById(garageId).isAvailable()) {
             if (order.getGarageSlot() != null) {
                 order.getGarageSlot().setAvailable(true); // освобождает гараж, который уже был назначен этому заказу
@@ -58,9 +61,11 @@ public class OrderService {
             order.setGarageSlot(garageService.getById(garageId));
             garageService.getById(garageId).setAvailable(false);
         } else throw new GarageNotAvailableException("Garage with ID%d is unavailable".formatted(garageId));
+        return order;
     }
 
-    public void completeOrder(Long id) {
+
+    public Order completeOrder(Long id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny()
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d".formatted(id)));
         if (!order.isInProgress()) {
@@ -73,6 +78,7 @@ public class OrderService {
         }
         order.getGarageSlot().setAvailable(true);
         order.setCompletionDate(LocalDate.now());
+        return order;
     }
 
     public List<Order> getSortedOrders(String field) {
