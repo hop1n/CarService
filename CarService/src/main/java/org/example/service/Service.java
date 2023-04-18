@@ -1,9 +1,9 @@
 package org.example.service;
 
 public interface Service<T> {
-    void add(T obj);
+    T add(T obj);
 
-    T getById(int id);
+    T getById(Long id);
 
-    void remove(int id);
+    boolean remove(Long id);
 }

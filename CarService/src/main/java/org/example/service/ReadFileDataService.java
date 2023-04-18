@@ -21,9 +21,9 @@ public class ReadFileDataService {
     GarageService garageService;
     OrderService orderService;
 
-    private final String REPAIRERS_PATH = "src" + File.separator + "repairers-storage.json";
-    private final String ORDERS_PATH = "src" + File.separator + "orders-storage.json";
-    private final String GARAGES_PATH = "src" + File.separator + "garages-storage.json";
+    private final String REPAIRERS_PATH = "CarService"+ File.separator + "src" + File.separator + "repairers-storage.json";
+    private final String ORDERS_PATH = "CarService"+ File.separator +"src" + File.separator + "orders-storage.json";
+    private final String GARAGES_PATH = "CarService"+ File.separator +"src" + File.separator + "garages-storage.json";
 
     private final ObjectMapper objectMapper;
 

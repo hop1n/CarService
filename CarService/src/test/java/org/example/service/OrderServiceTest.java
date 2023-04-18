@@ -4,6 +4,7 @@ import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
+import org.example.settings.GarageSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -34,11 +35,13 @@ public class OrderServiceTest {
     private RepairerService repairerService;
     private GarageService garageService;
     private OrderService orderService;
+    private GarageSettings garageSettings;
 
     @BeforeEach
     void setUp() {
+        garageSettings = new GarageSettings("../CarService/src/main/resources/application.properties");
         repairerService = new RepairerService();
-        garageService = new GarageService();
+        garageService = new GarageService(garageSettings);
         orderService = new OrderService(repairerService, garageService);
         orderService.addOrder(ORDER1);
         orderService.addOrder(ORDER2);
@@ -81,6 +84,7 @@ public class OrderServiceTest {
 
     @Test
     void assignGarageSlotTest() {
+        garageSettings.setChangeable(true);
         garageService.add(GARAGE_SLOT);
         orderService.assignGarageSlot(ORDER3, GARAGE_SLOT.getId());
 
@@ -89,6 +93,7 @@ public class OrderServiceTest {
 
     @Test
     void assignGarageSlotExcTest() {
+        garageSettings.setChangeable(true);
         garageService.add(GARAGE_SLOT1);
         GARAGE_SLOT1.setAvailable(false);
         assertThatThrownBy(() -> orderService.assignGarageSlot(ORDER2,
@@ -105,6 +110,7 @@ public class OrderServiceTest {
 
     @Test
     void completeOrderTest() {
+        garageSettings.setChangeable(true);
         garageService.add(GARAGE_SLOT);
         orderService.assignGarageSlot(ORDER2, GARAGE_SLOT.getId());
         orderService.completeOrder(ORDER2.getId());

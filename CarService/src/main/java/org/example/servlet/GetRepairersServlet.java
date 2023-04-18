@@ -1,13 +1,12 @@
 package org.example.servlet;
 
-import org.eclipse.jetty.server.Response;
 import org.example.service.RepairerService;
 
 import java.util.Map;
 
-public class ShowRepairersServlet extends JsonServlet {
+public class GetRepairersServlet extends JsonServlet {
     private final RepairerService repairerService;
-    public ShowRepairersServlet(RepairerService repairerService) {
+    public GetRepairersServlet(RepairerService repairerService) {
         this.repairerService = repairerService;
     }
 
