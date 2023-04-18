@@ -69,7 +69,7 @@ public class HttpInterface {
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new GetOrderByIdServlet(orderService)),
-                        "/orders/*");
+                        "/get-order-by-id/*");
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new CreateOrderServlet(orderService)),

@@ -11,7 +11,7 @@ public class RemoveGarageSlotServlet extends JsonServlet{
         this.garageService = garageService;
     }
     @Override
-    Response post(String uri, Map<String, String[]> parameters) {
+    Response post(String uri, Map<String, String> parameters) {
         long id = Long.parseLong(uri.substring(uri.lastIndexOf('/')+1));
         return new Response(garageService.remove(id));
     }

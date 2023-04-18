@@ -14,8 +14,7 @@ public class AssignRepairerOrderServlet extends JsonServlet {
 
     @Override
     Response post(String uri, Map<String, String> body) {
-//        int repairerId = Integer.parseInt(uri.substring(uri.lastIndexOf('/') + 1));
         return new Response(orderService.assignRepairer(orderService
-                .getOrderById(Long.parseLong(body.get("id"))), Integer.parseInt(body.get("repairerId"))));
+                .getOrderById(Long.parseLong(body.get("id"))), Long.parseLong(body.get("repairerId"))));
     }
 }
