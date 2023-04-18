@@ -7,10 +7,10 @@ import java.util.List;
 
 public class OrderServiceDto {
 
-    private int orderCount;
+    private Long orderCount;
     private List<Order> orders;
 
-    public OrderServiceDto(int orderCount, List<Order> orders) {
+    public OrderServiceDto(Long orderCount, List<Order> orders) {
         this.orderCount = orderCount;
         this.orders = orders;
     }
@@ -27,7 +27,7 @@ public class OrderServiceDto {
         orderService.setOrderCount(this.orderCount);
     }
 
-    public int getOrderCount() {
+    public Long getOrderCount() {
         return orderCount;
     }
 
@@ -35,7 +35,7 @@ public class OrderServiceDto {
         return orders;
     }
 
-    public void setOrderCount(int orderCount) {
+    public void setOrderCount(Long orderCount) {
         this.orderCount = orderCount;
     }
 

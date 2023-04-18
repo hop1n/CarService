@@ -24,6 +24,7 @@ public class OrderServiceTest {
     private static final Order ORDER1 = new Order(90);
     private static final Order ORDER2 = new Order(180);
     private static final Order ORDER3 = new Order(150);
+    private static final Order ORDER4 = new Order(200);
     private static final Repairer REPAIRER1 = new Repairer("Peter");
     private static final Repairer REPAIRER2 = new Repairer("Ivan");
     private static final Repairer REPAIRER3 = new Repairer("Kolya");
@@ -55,7 +56,7 @@ public class OrderServiceTest {
 
     @Test
     void getOrderByIdTest() {
-        assertThat(orderService.getOrderById(ORDER2.getId()).getId()).isEqualTo(ORDER2.getId());
+        assertThat(orderService.getOrderById((long)ORDER2.getId()).getId()).isEqualTo(ORDER2.getId());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class OrderServiceTest {
 
     @Test
     void removeOrderTest() {
-        orderService.removeOrder(ORDER1.getId());
+        orderService.removeOrder((long)ORDER1.getId());
         assertThat(orderService.getOrders()).size().isEqualTo(2);
     }
 
@@ -79,7 +80,7 @@ public class OrderServiceTest {
         repairerService.add(REPAIRER4);
         orderService.assignRepairer(ORDER3, REPAIRER4.getId());
 
-        assertThat(orderService.getOrders().get(ORDER3.getId() - 1).getRepairers()).contains(REPAIRER4);
+        assertThat(orderService.getOrders().get((ORDER3.getId() - 1)).getRepairers()).contains(REPAIRER4);
     }
 
     @Test
@@ -88,7 +89,7 @@ public class OrderServiceTest {
         garageService.add(GARAGE_SLOT);
         orderService.assignGarageSlot(ORDER3, GARAGE_SLOT.getId());
 
-        assertThat(orderService.getOrders().get(ORDER3.getId() - 1).getGarageSlot()).isEqualTo(GARAGE_SLOT);
+        assertThat(orderService.getOrders().get((ORDER3.getId() - 1)).getGarageSlot()).isEqualTo(GARAGE_SLOT);
     }
 
     @Test
@@ -104,20 +105,23 @@ public class OrderServiceTest {
     void assignRepairerExcTest() {
         repairerService.add(REPAIRER5);
         REPAIRER5.setIsAvailable(false);
-        assertThatThrownBy(() -> orderService.assignRepairer(ORDER2,
+        assertThatThrownBy(() -> orderService.assignRepairer(ORDER3,
                 REPAIRER5.getId())).isInstanceOf(RepairerNotAvailableException.class);
     }
 
     @Test
     void completeOrderTest() {
         garageSettings.setChangeable(true);
+        orderService.addOrder(ORDER4);
         garageService.add(GARAGE_SLOT);
-        orderService.assignGarageSlot(ORDER2, GARAGE_SLOT.getId());
-        orderService.completeOrder(ORDER2.getId());
+        repairerService.add(REPAIRER4);
+        orderService.assignGarageSlot(ORDER4, GARAGE_SLOT.getId());
+        orderService.assignRepairer(ORDER4, REPAIRER4.getId());
+        orderService.completeOrder((long)ORDER4.getId());
 
-        assertTrue(ORDER2.getGarageSlot().isAvailable());
-        assertFalse(ORDER2.isInProgress());
-        assertTrue(ORDER2.getRepairers().stream().allMatch(Repairer::getIsAvailable));
+        assertTrue(ORDER4.getGarageSlot().isAvailable());
+        assertFalse(ORDER4.isInProgress());
+        assertTrue(ORDER4.getRepairers().stream().allMatch(Repairer::getIsAvailable));
     }
 
     @Test
@@ -129,12 +133,12 @@ public class OrderServiceTest {
     @Test
     void completeOrderExcTest() {
         ORDER1.setInProgress(false);
-        assertThatThrownBy(() -> orderService.completeOrder(ORDER1.getId())).isInstanceOf(OrderAlreadyCompletedException.class);
+        assertThatThrownBy(() -> orderService.completeOrder((long)ORDER1.getId())).isInstanceOf(OrderAlreadyCompletedException.class);
     }
 
     @Test
     void getOrderCountTest(){
-        assertThat(orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
+        assertThat((long)orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
     }
 
     @Test
@@ -157,13 +161,12 @@ public class OrderServiceTest {
         ordersForAdded.add(order4);
         ordersForAdded.add(order5);
         orderService.setOrders(ordersForAdded);
-        orderService.setOrderCount(2);
-        assertThat(orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
+        orderService.setOrderCount(2L);
+        assertThat((long)orderService.getOrders().size()).isEqualTo(orderService.getOrderCount());
     }
 
     @Test
     void getSortedOrdersSortingTest() {
-        ORDER1.setInProgress(false);
         ORDER1.setCreationDate(LocalDate.parse("2023-04-07"));
         ORDER1.setCompletionDate(LocalDate.parse("2023-04-09"));
         ORDER2.setCreationDate(LocalDate.parse("2023-04-06"));
@@ -175,10 +178,11 @@ public class OrderServiceTest {
         repairerService.add(REPAIRER2);
         repairerService.add(REPAIRER3);
 
+        ORDER1.setInProgress(true);
         orderService.assignRepairer(ORDER3, REPAIRER1.getId());
         orderService.assignRepairer(ORDER1, REPAIRER2.getId());
         orderService.assignRepairer(ORDER2, REPAIRER3.getId());
-
+        ORDER1.setInProgress(false);
 
         assertAll(
                 () -> {
@@ -253,10 +257,6 @@ public class OrderServiceTest {
                             "Order{id=2,garageSlot=null,repairers=[\n" +
                             "Repairer{name='Kolya',isAvailable=false,id=3,}],cost=180,inProgress=true,creationDate=2023-04-06,completionDate=2023-04-08}]");
                 }
-//
                );
-
     }
-
-
 }

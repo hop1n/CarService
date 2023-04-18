@@ -2,6 +2,8 @@ package org.example.servlet;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.model.Order;
+import org.example.model.Repairer;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +36,8 @@ abstract class JsonServlet extends HttpServlet {
         return new Response(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
-    Response post(String uri, Map<String, String[]> parameters) {
-        return new Response(HttpServletResponse.SC_OK);
+    Response post(String uri, Map<String, String> body) {
+        return new Response(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
 

@@ -13,6 +13,7 @@ import org.example.settings.GarageSettings;
 
 public class HttpInterface {
     private Server server;
+
     RepairerService repairerService = new RepairerService();
     GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
     GarageService garageService = new GarageService(garageSettings);
@@ -65,5 +66,38 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder
                                 (new GetGarageSlotByIdServlet(garageService)),
                         "/garageslots/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetOrderByIdServlet(orderService)),
+                        "/orders/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new CreateOrderServlet(orderService)),
+                        "/create-order");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new RemoveOrderServlet(orderService)),
+                        "/remove-order");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetOrdersServlet(orderService)),
+                        "/get-orders");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetSortedOrdersServlet(orderService)),
+                        "/get-sorted-orders");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new AssignRepairerOrderServlet(orderService)),
+                        "/orders/assign/repairer");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new AssignGarageOrderServlet(orderService)),
+                        "/orders/assign/garage");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new CompleteOrderServlet(orderService)),
+                        "/orders/complete");
+
     }
 }

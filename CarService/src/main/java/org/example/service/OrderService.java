@@ -19,38 +19,41 @@ public class OrderService {
 
     private final RepairerService repairerService;
     private final GarageService garageService;
-    private int orderCount;
+    private Long orderCount;
     private List<Order> orders = new ArrayList<>();
 
     public OrderService(RepairerService repairerService, GarageService garageService) {
         this.repairerService = repairerService;
         this.garageService = garageService;
-        orderCount = 0;
+        orderCount = 0L;
     }
 
-    public void addOrder(Order order) {
+    public Order addOrder(Order order) {
         if (order.getCost() < 0) throw new IncorrectCostException("Cost shouldn't be less then 0");
         orders.add(order);
         orderCount++;
         order.setId(orderCount);
+        return order;
     }
 
-    public void removeOrder(int id) {
+    public boolean removeOrder(Long id) {
         if (!orders.removeIf(order -> order.getId() == id)) {
             throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
         }
+        return true;
     }
 
-    public void assignRepairer(Order order, Long... ids) {
+    public Order  assignRepairer(Order order, Long... ids) {
         for (Long id : ids) {
             if (repairerService.getById(id).getIsAvailable()) {
                 order.addRepair(repairerService.getById(id));
                 repairerService.getById(id).setIsAvailable(false);
             } else throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(id));
         }
+        return order;
     }
 
-    public void assignGarageSlot(Order order, Long garageId) {
+    public Order assignGarageSlot(Order order, Long garageId) {
         if (garageService.getById(garageId).isAvailable()) {
             if (order.getGarageSlot() != null) {
                 order.getGarageSlot().setAvailable(true); // освобождает гараж, который уже был назначен этому заказу
@@ -58,9 +61,11 @@ public class OrderService {
             order.setGarageSlot(garageService.getById(garageId));
             garageService.getById(garageId).setAvailable(false);
         } else throw new GarageNotAvailableException("Garage with ID%d is unavailable".formatted(garageId));
+        return order;
     }
 
-    public void completeOrder(int id) {
+
+    public Order completeOrder(Long id) {
         Order order = orders.stream().filter(o -> o.getId() == id).findAny()
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d".formatted(id)));
         if (!order.isInProgress()) {
@@ -73,6 +78,7 @@ public class OrderService {
         }
         order.getGarageSlot().setAvailable(true);
         order.setCompletionDate(LocalDate.now());
+        return order;
     }
 
     public List<Order> getSortedOrders(String field) {
@@ -102,7 +108,7 @@ public class OrderService {
         }
     }
 
-    public Order getOrderById(int id) {
+    public Order getOrderById(Long id) {
         return orders.stream().filter(order -> order.getId() == id).findAny()
                 .orElseThrow(() -> new OrderNotFoundException("There is no order with ID%d ".formatted(id)));
     }
@@ -115,11 +121,11 @@ public class OrderService {
         this.orders = orders;
     }
 
-    public int getOrderCount() {
+    public Long getOrderCount() {
         return orderCount;
     }
 
-    public void setOrderCount(int orderCount) {
+    public void setOrderCount(Long orderCount) {
         this.orderCount = orderCount;
     }
 }
