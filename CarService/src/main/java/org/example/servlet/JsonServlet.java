@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,13 +39,6 @@ abstract class JsonServlet extends HttpServlet {
     Response post(String uri, Map<String, String> body) {
         return new Response(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
-
-//    Response post(String uri, Order order) {
-//        return new Response(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-//    }
-//    Response post(String uri, Repairer repairer) {
-//        return new Response(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-//    }
 
 
     private void respond(HttpServletResponse resp, Response response) throws IOException {

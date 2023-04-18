@@ -1,4 +1,20 @@
 {
-  "orderCount" : 0,
-  "orders" : [ ]
+  "orderCount" : 2,
+  "orders" : [ {
+    "garageSlot" : null,
+    "repairers" : [ ],
+    "cost" : 200,
+    "inProgress" : true,
+    "creationDate" : [ 2023, 4, 18 ],
+    "completionDate" : null,
+    "id" : 1
+  }, {
+    "garageSlot" : null,
+    "repairers" : [ ],
+    "cost" : 200,
+    "inProgress" : true,
+    "creationDate" : [ 2023, 4, 18 ],
+    "completionDate" : null,
+    "id" : 2
+  } ]
 }

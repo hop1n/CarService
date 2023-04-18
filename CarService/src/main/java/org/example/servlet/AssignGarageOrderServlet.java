@@ -14,8 +14,7 @@ public class AssignGarageOrderServlet extends JsonServlet {
 
     @Override
     Response post(String uri, Map<String, String> body) {
-//        int garageId = Integer.parseInt(uri.substring(uri.lastIndexOf('/') + 1));
         return new Response(orderService.assignGarageSlot(orderService.getOrderById(
-                Long.parseLong(body.get("id"))), Integer.parseInt(body.get("garageId"))));
+                Long.parseLong(body.get("id"))), Long.parseLong(body.get("garageId"))));
     }
 }

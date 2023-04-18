@@ -4,6 +4,7 @@ import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
+import org.example.settings.GarageSettings;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +13,13 @@ import java.io.InputStreamReader;
 public class ConsoleProcessor {
 
     RepairerService repairerService = new RepairerService();
-    GarageService garageService = new GarageService("src/main/resources/application.properties");
+    GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
+    GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
     public void initLogs() {
-        garageService.initializePropertyFromFile();
+        garageSettings.initializeProperty();
         try {
             readFileDataService.readFromFile();
         } catch (JsonParsingException e) {
@@ -93,7 +95,7 @@ public class ConsoleProcessor {
                 break;
             case "remove":
                 try {
-                    repairerService.remove(Integer.parseInt(words[2]));
+                    repairerService.remove(Long.parseLong(words[2]));
                 } catch (RepairerNotFoundException e) {
                     System.err.println(e.getMessage());
                 } catch (IndexOutOfBoundsException e) {
@@ -127,7 +129,7 @@ public class ConsoleProcessor {
                 break;
             case "remove":
                 try {
-                    garageService.remove(Integer.parseInt(words[2]));
+                    garageService.remove(Long.parseLong(words[2]));
                     System.out.printf("Garage slot %d deleted succesfully\n" +
                                     "Total garage slots: %d\n",
                             Integer.parseInt(words[2]),
@@ -183,12 +185,12 @@ public class ConsoleProcessor {
                 try {
                     if (words[4].equals("repairer")) {
                         orderService.assignRepairer(orderService.getOrderById(Long.parseLong(words[3])),
-                                Integer.parseInt(words[5]));
+                                Long.parseLong(words[5]));
                         System.out.printf("Repairer %d assigned to Order %d successfully", Integer.parseInt(words[5]),
                                 Integer.parseInt(words[3]));
                     } else if (words[4].equals("garage")) {
                         orderService.assignGarageSlot(orderService.getOrderById(Long.parseLong(words[3])),
-                                Integer.parseInt(words[5]));
+                                Long.parseLong(words[5]));
                         System.out.printf("Garage %d assigned to Order %d successfully", Integer.parseInt(words[5]),
                                 Integer.parseInt(words[3]));
                     } else {

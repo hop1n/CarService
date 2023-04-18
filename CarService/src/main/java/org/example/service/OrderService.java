@@ -43,8 +43,8 @@ public class OrderService {
         return true;
     }
 
-    public Order assignRepairer(Order order, int... ids) {
-        for (int id : ids) {
+    public Order  assignRepairer(Order order, Long... ids) {
+        for (Long id : ids) {
             if (repairerService.getById(id).getIsAvailable()) {
                 order.addRepair(repairerService.getById(id));
                 repairerService.getById(id).setIsAvailable(false);
@@ -53,7 +53,7 @@ public class OrderService {
         return order;
     }
 
-    public Order assignGarageSlot(Order order, int garageId) {
+    public Order assignGarageSlot(Order order, Long garageId) {
         if (garageService.getById(garageId).isAvailable()) {
             if (order.getGarageSlot() != null) {
                 order.getGarageSlot().setAvailable(true); // освобождает гараж, который уже был назначен этому заказу
@@ -99,7 +99,7 @@ public class OrderService {
                     return orders.stream().sorted(Comparator.comparing(Order::isInProgress))
                             .collect(Collectors.toList());
                 case REPAIRER:
-                    orders.sort(Comparator.comparingInt(o -> o.getRepairers().iterator().next().getId()));
+                    orders.sort(Comparator.comparingLong(o -> o.getRepairers().iterator().next().getId()));
                     return orders;
             }
             return orders;
