@@ -15,7 +15,7 @@ public class HttpInterface {
     private Server server;
 
     RepairerService repairerService = new RepairerService();
-    GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
+    GarageSettings garageSettings = new GarageSettings("./src/main/resources/application.properties");
     GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
     ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
@@ -98,6 +98,14 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder
                                 (new CompleteOrderServlet(orderService)),
                         "/orders/complete");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                                new AddRepairerServlet(repairerService)),
+                        "/add-repairer");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                        new RemoveRepairerServlet(repairerService)),
+                "/remove-repairer");
 
     }
 }

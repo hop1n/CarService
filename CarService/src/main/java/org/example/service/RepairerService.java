@@ -5,6 +5,7 @@ import org.example.model.Repairer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class RepairerService implements Service<Repairer> {
     private Long repairersCount;
@@ -17,7 +18,7 @@ public class RepairerService implements Service<Repairer> {
 
     @Override
     public Repairer getById(Long id) {
-        return repairers.stream().filter(repairer -> repairer.getId() == id).findFirst()
+        return repairers.stream().filter(repairer -> Objects.equals(repairer.getId(), id)).findFirst()
                 .orElseThrow(() -> new RepairerNotFoundException("there is no repairer with id: %d".formatted(id)));
     }
 
