@@ -19,12 +19,12 @@ public class GarageServiceDto {
     }
 
     public static GarageServiceDto fromService(GarageService garageService) {
-        return new GarageServiceDto(garageService.getGarageCount(), garageService.getGarageSlots());
+        return new GarageServiceDto(Math.toIntExact(garageService.getGarageCount()), garageService.getGarageSlots());
     }
 
     public void toService(GarageService garageService) {
         garageService.setGarageSlots(this.garageSlots);
-        garageService.setGarageCount(this.garageCount);
+        garageService.setGarageCount((long) this.garageCount);
     }
 
     public int getGarageCount() {

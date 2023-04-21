@@ -83,7 +83,7 @@ public class OrderServiceTest {
     @Test
     void assignGarageSlotTest() {
         garageService.add(GARAGE_SLOT);
-        orderService.assignGarageSlot(ORDER3, GARAGE_SLOT.getId());
+        orderService.assignGarageSlot(ORDER3, Math.toIntExact(GARAGE_SLOT.getId()));
 
         assertThat(orderService.getOrders().get((int) (ORDER3.getId() - 1)).getGarageSlot()).isEqualTo(GARAGE_SLOT);
     }
@@ -93,7 +93,7 @@ public class OrderServiceTest {
         garageService.add(GARAGE_SLOT1);
         GARAGE_SLOT1.setAvailable(false);
         assertThatThrownBy(() -> orderService.assignGarageSlot(ORDER2,
-                GARAGE_SLOT1.getId())).isInstanceOf(GarageNotAvailableException.class);
+                Math.toIntExact(GARAGE_SLOT1.getId()))).isInstanceOf(GarageNotAvailableException.class);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class OrderServiceTest {
         orderService.addOrder(ORDER4);
         garageService.add(GARAGE_SLOT);
         repairerService.add(REPAIRER4);
-        orderService.assignGarageSlot(ORDER4, GARAGE_SLOT.getId());
+        orderService.assignGarageSlot(ORDER4, Math.toIntExact(GARAGE_SLOT.getId()));
         orderService.assignRepairer(ORDER4, REPAIRER4.getId());
         orderService.completeOrder(ORDER4.getId());
 

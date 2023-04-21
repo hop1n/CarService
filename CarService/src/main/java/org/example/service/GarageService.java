@@ -12,17 +12,17 @@ public class GarageService implements Service<GarageSlot> {
     private List<GarageSlot> garageSlots = new ArrayList<>();
     private final String path;
     private boolean changeable;
-    private int garageCount;
+    private Long garageCount;
 
     public GarageService(String path) {
         this.path = path;
-        garageCount = 0;
+        garageCount = 0L;
     }
 
     public GarageService() {
         this.path = "";
         this.changeable = true;
-        garageCount = 0;
+        garageCount = 0L;
     }
 
     public void initializePropertyFromFile(){
@@ -61,11 +61,11 @@ public class GarageService implements Service<GarageSlot> {
                 '}';
     }
 
-    public int getGarageCount() {
+    public Long getGarageCount() {
         return garageCount;
     }
 
-    public void setGarageCount(int garageCount) {
+    public void setGarageCount(Long garageCount) {
         this.garageCount = garageCount;
     }
 
@@ -79,7 +79,7 @@ public class GarageService implements Service<GarageSlot> {
                 .stream()
                 .max(Comparator.comparing(GarageSlot::getId))
                 .map(GarageSlot::getId)
-                .orElse(0);
+                .orElse(0L);
     }
 
     public void setChangeable(boolean changeable) {

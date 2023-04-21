@@ -86,7 +86,7 @@ public class GarageServiceTest {
 
     @Test
     void setGarageCount(){
-        garageService.setGarageCount(5);
+        garageService.setGarageCount(5L);
         Assertions.assertEquals(garageService.getGarageCount(), 5);
     }
     @Test

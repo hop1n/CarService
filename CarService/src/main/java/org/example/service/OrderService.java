@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class OrderService {
 
-    enum Fields {
+    public enum Fields {
         CREATION, COMPLETION, COST, FINISHED, PROGRESS, REPAIRER
     }
 
