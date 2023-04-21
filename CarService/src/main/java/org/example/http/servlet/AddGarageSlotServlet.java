@@ -1,4 +1,4 @@
-package org.example.servlet;
+package org.example.http.servlet;
 
 import org.example.model.GarageSlot;
 import org.example.service.GarageService;

@@ -1,9 +1,7 @@
-package org.example.servlet;
+package org.example.http.servlet;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.model.Order;
-import org.example.model.Repairer;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
