@@ -1,6 +1,5 @@
-package org.example.servlet;
+package org.example.http.servlet;
 
-import org.example.model.Order;
 import org.example.service.OrderService;
 
 import java.util.Map;

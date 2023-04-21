@@ -1,4 +1,4 @@
-package org.example.servlet;
+package org.example.http.servlet;
 
 import org.example.service.GarageService;
 
@@ -10,6 +10,7 @@ public class GetGarageSlotsServlet extends JsonServlet{
     public GetGarageSlotsServlet(GarageService garageService) {
         this.garageService = garageService;
     }
+
     @Override
     Response get(String uri, Map<String, String[]> parameters) {
         return new Response(garageService.getGarageSlots());

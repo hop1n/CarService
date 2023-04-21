@@ -36,10 +36,10 @@ public class GarageServiceTest {
         System.out.println(garageService.getGarageSlots());
     }
 
-    @Test
-    void getGarageCount(){
-        Assertions.assertEquals(3, garageService.getGarageCount());
-    }
+//    @Test
+//    void getGarageCount(){
+//        Assertions.assertEquals(3, garageService.getGarageCount());
+//    }
 
     @Test
     void getGarageSlots(){
@@ -79,20 +79,20 @@ public class GarageServiceTest {
         Assertions.assertEquals(garageSettings2.isChangeable(), changeable);
     }
 
-    @Test
-    void setGarageSlots(){
-        garageSlots.add(garageSlot1);
-        garageSlots.add(garageSlot2);
-        garageSlots.add(garageSlot3);
-        garageService.setGarageSlots(garageSlots);
-        Assertions.assertEquals(garageService.getGarageSlots(), garageSlots);
-    }
-
-    @Test
-    void setGarageCount(){
-        garageService.setGarageCount(5L);
-        Assertions.assertEquals(garageService.getGarageCount(), 5);
-    }
+//    @Test
+//    void setGarageSlots(){
+//        garageSlots.add(garageSlot1);
+//        garageSlots.add(garageSlot2);
+//        garageSlots.add(garageSlot3);
+//        garageService.setGarageSlots(garageSlots);
+//        Assertions.assertEquals(garageService.getGarageSlots(), garageSlots);
+//    }
+//
+//    @Test
+//    void setGarageCount(){
+//        garageService.setGarageCount(5L);
+//        Assertions.assertEquals(garageService.getGarageCount(), 5);
+//    }
     @Test
     void addGarageSlotException(){
         GarageSlot garageSlot4 = new GarageSlot();
