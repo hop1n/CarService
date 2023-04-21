@@ -1,4 +1,4 @@
-package org.example.http;
+package org.example.servlet;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -102,7 +102,12 @@ public class HttpInterface {
                         "/add-repairer");
         servletHandler
                 .addServletWithMapping(new ServletHolder(
-                                new RemoveRepairerServlet(repairerService)),
-                        "/remove-repairer");
+                                new GetRepairerByIdServlet(repairerService)),
+                        "/get-repairer-by-id");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                        new RemoveRepairerServlet(repairerService)),
+                "/remove-repairer");
+
     }
 }
