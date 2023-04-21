@@ -1,62 +1,44 @@
 package org.example.service;
 
-import org.example.exception.RepairerNotFoundException;
 import org.example.model.Repairer;
+import org.example.repository.RepairerRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 public class RepairerService implements Service<Repairer> {
-    private Long repairersCount;
-    private Collection<Repairer> repairers = new ArrayList<>();
-
+    private final RepairerRepository repository = new RepairerRepository();
 
     public RepairerService() {
-        repairersCount = 0L;
     }
 
     @Override
     public Repairer getById(Long id) {
-        return repairers.stream().filter(repairer -> Objects.equals(repairer.getId(), id)).findFirst()
-                .orElseThrow(() -> new RepairerNotFoundException("there is no repairer with id: %d".formatted(id)));
+        return repository.getById(id);
+//        return repairers.stream().filter(repairer -> Objects.equals(repairer.getId(), id)).findFirst()
+//                .orElseThrow(() -> new RepairerNotFoundException("there is no repairer with id: %d".formatted(id)));
     }
 
     @Override
     public Repairer add(Repairer repairer) {
-        repairers.add(repairer);
-        repairersCount++;
-        repairer.setId(repairersCount);
-        return repairer;
+        return repository.add(repairer);
     }
 
     @Override
     public boolean remove(Long id) {
-        boolean removeFlag = repairers.removeIf(repairer -> repairer.getId() == id);
-        if (!removeFlag) {
-            throw new RepairerNotFoundException("there is no repairer with id: %d".formatted(id));
-        }
-        return true;
+        return repository.remove(id);
+//        boolean removeFlag = repairers.removeIf(repairer -> repairer.getId() == id);
+//        if (!removeFlag) {
+//            throw new RepairerNotFoundException("there is no repairer with id: %d".formatted(id));
+//        }
+//        return true;
     }
 
     @Override
     public String toString() {
-        return repairers.toString();
+        return repository.toString();
     }
 
     public Collection<Repairer> getRepairers() {
-        return repairers;
-    }
-
-    public void setRepairers(Collection<Repairer> repairers) {
-        this.repairers = repairers;
-    }
-
-    public Long getRepairersCount() {
-        return repairersCount;
-    }
-
-    public void setRepairersCount(Long repairersCount) {
-        this.repairersCount = repairersCount;
+        return repository.getRepairers();
     }
 }

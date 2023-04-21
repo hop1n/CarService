@@ -1,13 +1,13 @@
-package org.example.servlet;
+package org.example.http;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.example.http.servlet.*;
 import org.example.service.GarageService;
 import org.example.service.OrderService;
-import org.example.service.ReadFileDataService;
 import org.example.service.RepairerService;
 import org.example.settings.GarageSettings;
 
@@ -18,11 +18,7 @@ public class HttpInterface {
     GarageSettings garageSettings = new GarageSettings("./src/main/resources/application.properties");
     GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
-    ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
-
     public void start() {
-        garageSettings.initializeProperty();
-        readFileDataService.readFromFile();
         configure();
         try {
             server.start();
@@ -102,6 +98,10 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder(
                                 new AddRepairerServlet(repairerService)),
                         "/add-repairer");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                                new GetRepairerByIdServlet(repairerService)),
+                        "/get-repairer-by-id");
         servletHandler
                 .addServletWithMapping(new ServletHolder(
                         new RemoveRepairerServlet(repairerService)),
