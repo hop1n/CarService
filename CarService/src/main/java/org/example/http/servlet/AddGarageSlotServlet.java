@@ -11,6 +11,7 @@ public class AddGarageSlotServlet extends JsonServlet{
     public AddGarageSlotServlet(GarageService garageService) {
         this.garageService = garageService;
     }
+
     @Override
     Response post(String uri, Map<String, String> parameters) {
         GarageSlot garageSlot = new GarageSlot();
