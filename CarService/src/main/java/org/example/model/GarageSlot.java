@@ -8,6 +8,11 @@ public class GarageSlot {
         isAvailable = true;
     }
 
+    public GarageSlot(Long id, boolean isAvailable) {
+        this.id = id;
+        this.isAvailable = isAvailable;
+    }
+
     public Long getId() {
         return id;
     }
