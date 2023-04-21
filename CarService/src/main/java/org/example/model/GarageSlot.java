@@ -10,7 +10,7 @@ public class GarageSlot {
 
     public GarageSlot(Long id, boolean isAvailable) {
         this.id = id;
-        this.isAvailable = true;
+        this.isAvailable = isAvailable;
     }
 
     public Long getId() {

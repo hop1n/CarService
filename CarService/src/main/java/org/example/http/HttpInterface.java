@@ -5,22 +5,22 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.example.http.servlet.*;
 import org.example.service.GarageService;
 import org.example.service.OrderService;
-import org.example.service.ReadFileDataService;
 import org.example.service.RepairerService;
+import org.example.settings.GarageSettings;
 
 public class HttpInterface {
     private Server server;
 
     RepairerService repairerService = new RepairerService();
-    GarageService garageService = new GarageService("./src/main/resources/application.properties");
+    GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
+    GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
-    ReadFileDataService readFileDataService = new ReadFileDataService(repairerService, garageService, orderService);
 
     public void start() {
-        garageService.initializePropertyFromFile();
-        readFileDataService.readFromFile();
+        garageSettings.initializeProperty();
         configure();
         try {
             server.start();
@@ -50,8 +50,24 @@ public class HttpInterface {
                         "/get-repairers");
         servletHandler
                 .addServletWithMapping(new ServletHolder
+                                (new GetGarageSlotsServlet(garageService)),
+                        "/garageslots");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new AddGarageSlotServlet(garageService)),
+                        "/garageslots/add");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new RemoveGarageSlotServlet(garageService)),
+                        "/garageslots/remove/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetGarageSlotByIdServlet(garageService)),
+                        "/garageslots/*");
+        servletHandler
+                .addServletWithMapping(new ServletHolder
                                 (new GetOrderByIdServlet(orderService)),
-                        "/orders/*");
+                        "/get-order-by-id/*");
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new CreateOrderServlet(orderService)),
@@ -80,6 +96,18 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder
                                 (new CompleteOrderServlet(orderService)),
                         "/orders/complete");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                                new AddRepairerServlet(repairerService)),
+                        "/add-repairer");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                                new GetRepairerByIdServlet(repairerService)),
+                        "/get-repairer-by-id");
+        servletHandler
+                .addServletWithMapping(new ServletHolder(
+                        new RemoveRepairerServlet(repairerService)),
+                "/remove-repairer");
 
     }
 }

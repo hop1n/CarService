@@ -1,4 +1,4 @@
-package org.example.servlet;
+package org.example.http.servlet;
 
 import org.example.service.OrderService;
 
@@ -14,6 +14,6 @@ public class AssignRepairerOrderServlet extends JsonServlet {
     @Override
     Response post(String uri, Map<String, String> body) {
         return new Response(orderService.assignRepairer(orderService
-                .getOrderById(Long.parseLong(body.get("id"))), Integer.parseInt(body.get("repairerId"))));
+                .getOrderById(Long.parseLong(body.get("id"))), Long.parseLong(body.get("repairerId"))));
     }
 }

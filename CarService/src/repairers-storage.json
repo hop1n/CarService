@@ -1,8 +1,0 @@
-{
-  "repairersCount" : 1,
-  "repairers" : [ {
-    "id" : 1,
-    "name" : "Tom",
-    "isAvailable" : true
-  } ]
-}

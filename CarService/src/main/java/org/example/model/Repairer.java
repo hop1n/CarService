@@ -1,7 +1,7 @@
 package org.example.model;
 
 public class Repairer {
-    private int id;
+    private Long id;
     private final String name;
     private boolean isAvailable;
 
@@ -15,11 +15,17 @@ public class Repairer {
         isAvailable = true;
     }
 
-    public int getId() {
+    public Repairer(Long id, String name, boolean isAvailable) {
+        this.id = id;
+        this.name = name;
+        this.isAvailable = isAvailable;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
