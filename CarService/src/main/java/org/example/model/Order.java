@@ -6,12 +6,13 @@ import java.util.Collection;
 
 public class Order {
     private GarageSlot garageSlot;
-    private final Collection<Repairer> repairers = new ArrayList<>();
+    private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
     private LocalDate creationDate;
     private LocalDate completionDate;
     private Long id;
+    private Long garagesId;
 
     public Order() {
         this.creationDate = LocalDate.now();
@@ -23,6 +24,26 @@ public class Order {
         this.cost = cost;
         this.creationDate = LocalDate.now();
         this.inProgress = true;
+    }
+
+    public Order(Long id, int cost, boolean inProgress, GarageSlot garageSlot, LocalDate creationDate, LocalDate completionDate) {
+        this.id = id;
+        this.cost = cost;
+        this.inProgress = true;
+        this.garageSlot = garageSlot;
+        this.creationDate = creationDate;
+        this.completionDate = completionDate;
+    }
+
+    public Order(Long id, int cost, boolean inProgress, GarageSlot garageSlot,
+                 LocalDate creationDate, LocalDate completionDate, Collection<Repairer> repairers) {
+        this.id = id;
+        this.cost = cost;
+        this.inProgress = inProgress;
+        this.garageSlot = garageSlot;
+        this.creationDate = creationDate;
+        this.completionDate = completionDate;
+        this.repairers = repairers;
     }
 
     public void addRepair(Repairer repairer) {
