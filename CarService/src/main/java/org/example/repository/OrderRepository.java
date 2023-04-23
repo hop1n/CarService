@@ -1,11 +1,18 @@
 package org.example.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityTransaction;
+import org.example.connector.HibernateUtil;
 import org.example.connector.JDBCConfig;
 import org.example.exception.*;
 import org.example.model.GarageSlot;
 import org.example.model.Order;
 import org.example.model.Repairer;
 import org.example.service.OrderService.*;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -16,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class OrderRepository {
-
+    EntityManagerFactory entityManager = HibernateUtil.getEntityManagerFactory();
     private GarageRepository garageRepository;
     private RepairerRepository repairerRepository;
 
@@ -26,6 +33,7 @@ public class OrderRepository {
     }
 
     Connection connection;
+
 
     {
         try {
@@ -101,59 +109,86 @@ public class OrderRepository {
     }
 
     public List<Order> getOrders() {
-        List<Order> orders = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_SELECT_ALL)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    orders.add(orderMapper.apply(resultSet));
-                }
-            }
-            return orders;
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
+        EntityManager session = entityManager.createEntityManager();
+        return session.createQuery("SELECT o FROM Order o", Order.class).getResultList();
     }
+//        List<Order> orders = new ArrayList<>();
+//        try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_SELECT_ALL)) {
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                while (resultSet.next()) {
+//                    orders.add(orderMapper.apply(resultSet));
+//                }
+//            }
+//            return orders;
+//        } catch (SQLException e) {
+//            throw new IllegalArgumentException(e);
+//        }
+//    }
 
     public boolean addOrder(Order order) {
-        try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_ADD, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, order.getCost());
-            statement.setBoolean(2, order.isInProgress());
-
-            if (order.getGarageSlot() != null) {
-                statement.setLong(3, order.getGarageSlot().getId());
-            } else {
-                statement.setObject(3, null);
-            }
-
-            statement.setDate(4, Date.valueOf(order.getCreationDate()));
-
-            if (order.getCompletionDate() != null) {
-                statement.setDate(5, Date.valueOf(order.getCompletionDate()));
-            } else {
-                statement.setObject(5, null);
-            }
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
+        EntityManager session = entityManager.createEntityManager();
+        session.getTransaction().begin();
+        try {
+            session.persist(order);
+            session.getTransaction().commit();
+        } finally {
+            session.close();
         }
         return true;
     }
+//        try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_ADD, Statement.RETURN_GENERATED_KEYS)) {
+//            statement.setInt(1, order.getCost());
+//            statement.setBoolean(2, order.isInProgress());
+//
+//            if (order.getGarageSlot() != null) {
+//                statement.setLong(3, order.getGarageSlot().getId());
+//            } else {
+//                statement.setObject(3, null);
+//            }
+//
+//            statement.setDate(4, Date.valueOf(order.getCreationDate()));
+//
+//            if (order.getCompletionDate() != null) {
+//                statement.setDate(5, Date.valueOf(order.getCompletionDate()));
+//            } else {
+//                statement.setObject(5, null);
+//            }
+//            statement.executeUpdate();
+//
+//        } catch (SQLException e) {
+//            throw new IllegalArgumentException(e);
+//        }
+//        return true;
+//    }
 
     public Order getOrderById(Long id) {
-        try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_FIND_BY_ID)) {
-            statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return orderMapper.apply(resultSet);
-                } else {
-                    throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
-                }
+        EntityManager session = entityManager.createEntityManager();
+        session.getTransaction().begin();
+        try {
+            Order order = session.find(Order.class, id);
+            if (order == null) {
+                throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
+            } else {
+                return order;
             }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
+        } finally {
+            session.close();
         }
     }
+
+//        try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_FIND_BY_ID)) {
+//            statement.setLong(1, id);
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                if (resultSet.next()) {
+//                    return orderMapper.apply(resultSet);
+//                } else {
+//                    throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new IllegalArgumentException(e);
+//        }
+//    }
 
     public boolean removeOrder(Long id) {
         try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_DELETE_BY_ID)) {
@@ -193,67 +228,154 @@ public class OrderRepository {
     }
 
     public Order assignRepairer(Order order, Long... ids) {
-        for (Long repairerId : ids) {
-            try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_ASSIGN_REPAIRERS_IN_ORDERS)) {
-                statement.setLong(1, repairerId);
-                statement.setLong(2, order.getId());
-                statement.executeUpdate();
-
+        EntityManager session = entityManager.createEntityManager();
+        EntityTransaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
+            for (Long repairerId : ids) {
                 Repairer repairer = repairerRepository.getById(repairerId);
-                if (repairer.checkIsAvailable()) {
-                    setRepairerIsAvailable(repairer, false);
-                } else throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(repairer.getId()));
-            } catch (SQLException e) {
-                throw new IllegalArgumentException(e);
+                if (repairer.getIsAvailable()) {
+                    order.addRepair(repairer);
+                    repairer.setIsAvailable(false);
+                    session.merge(repairer);
+                    session.merge(order);
+                } else
+                    throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(repairerId));
             }
+            transaction.commit();
+            return order;
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw new IllegalArgumentException(e);
+        } finally {
+            session.close();
         }
-        return getOrderById(order.getId());
     }
+//        for (Long repairerId : ids) {
+//            try (PreparedStatement statement = connection.prepareStatement(ORDER_SQL_ASSIGN_REPAIRERS_IN_ORDERS)) {
+//                statement.setLong(1, repairerId);
+//                statement.setLong(2, order.getId());
+//                statement.executeUpdate();
+//
+//                Repairer repairer = repairerRepository.getById(repairerId);
+//                if (repairer.checkIsAvailable()) {
+//                    setRepairerIsAvailable(repairer, false);
+//                } else
+//                    throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(repairer.getId()));
+//            } catch (SQLException e) {
+//                throw new IllegalArgumentException(e);
+//            }
+//        }
+//        return getOrderById(order.getId());
+//    }
 
     public Order assignGarageSlot(Order order, Long garageId) {
-        try (Connection connection = JDBCConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(ORDER_SQL_ASSIGN_GARAGESLOT)) {
-            statement.setLong(1, garageId);
-            statement.setLong(2, order.getId());
-            statement.executeUpdate();
-
+        EntityManager session = entityManager.createEntityManager();
+        EntityTransaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
             GarageSlot garageSlot = garageRepository.getGarageSlotById(garageId);
             if (garageSlot.isAvailable()) {
-                setGarageIsAvailable(garageSlot, false);
-                return getOrderById(order.getId());
+                if (order.getGarageSlot() != null) {
+                    order.getGarageSlot().setAvailable(true);
+                }
+                order.setGarageSlot(garageSlot);
+                garageSlot.setAvailable(false);
+                session.merge(order);
+                session.merge(garageSlot);
+                transaction.commit();
+                return order;
             } else throw new GarageNotAvailableException("Garage with ID%d is unavailable".formatted(garageId));
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new IllegalArgumentException(e);
+        } finally {
+            session.close();
         }
     }
+//        try (Connection connection = JDBCConfig.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(ORDER_SQL_ASSIGN_GARAGESLOT)) {
+//            statement.setLong(1, garageId);
+//            statement.setLong(2, order.getId());
+//            statement.executeUpdate();
+//
+//            GarageSlot garageSlot = garageRepository.getGarageSlotById(garageId);
+//            if (garageSlot.isAvailable()) {
+//                setGarageIsAvailable(garageSlot, false);
+//                return getOrderById(order.getId());
+//            } else throw new GarageNotAvailableException("Garage with ID%d is unavailable".formatted(garageId));
+//        } catch (SQLException e) {
+//            throw new IllegalArgumentException(e);
+//        }
+//    }
 
     public Order completeOrder(Long id) {
-        try (Connection connection = JDBCConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(ORDER_SQL_COMPLETE)) {
-
+        EntityManager session = entityManager.createEntityManager();
+        EntityTransaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
             Order order = getOrderById(id);
+            if (order == null) {
+                throw new OrderNotFoundException("There is no order with ID%d".formatted(id));
+            }
             if (!order.isInProgress()) {
                 throw new OrderAlreadyCompletedException("Order with ID%d already completed".formatted(id));
             }
-            statement.setBoolean(1, false);
-            statement.setDate(2, Date.valueOf(LocalDate.now()));
-            statement.setLong(3, id);
-            statement.executeUpdate();
-
             Collection<Repairer> repairers = order.getRepairers();
-            GarageSlot garageSlot = garageRepository.getGarageSlotById(order.getGarageSlot().getId());
+//            GarageSlot garageSlot = garageRepository.getGarageSlotById(order.getGarageSlot().getId());
+            GarageSlot garageSlot = order.getGarageSlot();
             if (!repairers.isEmpty() && garageSlot != null) {
                 for (Repairer repairer : repairers) {
-                    setRepairerIsAvailable(repairer, true);
+                    repairer.setIsAvailable(true);
+                    session.merge(repairer);
                 }
-                setGarageIsAvailable(garageSlot, true);
-            } else throw new RepairerOrGarageIsNotAssignedException("You have to assign repairer" +
-                    " and garage slot to complete the order");
-            return getOrderById(order.getId());
-        } catch (SQLException e) {
+                garageSlot.setAvailable(true);
+                order.setCompletionDate(LocalDate.now());
+                order.setInProgress(false);
+                session.merge(order);
+                session.merge(garageSlot);
+                transaction.commit();
+                return getOrderById(id);
+            } else throw new RepairerOrGarageIsNotAssignedException("You have to assign repairer and garage slot to complete the order");
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new IllegalArgumentException(e);
+        } finally {
+            session.close();
         }
     }
+//            try (Connection connection = JDBCConfig.getConnection();
+//                 PreparedStatement statement = connection.prepareStatement(ORDER_SQL_COMPLETE)) {
+//
+//                Order order = getOrderById(id);
+//                if (!order.isInProgress()) {
+//                    throw new OrderAlreadyCompletedException("Order with ID%d already completed".formatted(id));
+//                }
+//                statement.setBoolean(1, false);
+//                statement.setDate(2, Date.valueOf(LocalDate.now()));
+//                statement.setLong(3, id);
+//                statement.executeUpdate();
+//
+//                Collection<Repairer> repairers = order.getRepairers();
+//                GarageSlot garageSlot = garageRepository.getGarageSlotById(order.getGarageSlot().getId());
+//                if (!repairers.isEmpty() && garageSlot != null) {
+//                    for (Repairer repairer : repairers) {
+//                        setRepairerIsAvailable(repairer, true);
+//                    }
+//                    setGarageIsAvailable(garageSlot, true);
+//                } else throw new RepairerOrGarageIsNotAssignedException("You have to assign repairer" +
+//                        " and garage slot to complete the order");
+//                return getOrderById(order.getId());
+//            } catch (SQLException e) {
+//                throw new IllegalArgumentException(e);
+//            }
+//        }
 
     public void setGarageIsAvailable(GarageSlot garageSlot, Boolean isAvailable) {
         try (Connection connection = JDBCConfig.getConnection();

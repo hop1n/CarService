@@ -55,15 +55,16 @@ public class OrderService {
     }
 
     public Order  assignRepairer(Order order, Long... ids) {
-        for (Long id : ids) {
-            orderRepository.assignRepairer(order, id);
+        return orderRepository.assignRepairer(order, ids);
+    }
+//        for (Long id : ids) {
 //            if (repairerService.getById(id).getIsAvailable()) {
 //                order.addRepair(repairerService.getById(id));
 //                repairerService.getById(id).setIsAvailable(false);
 //            } else throw new RepairerNotAvailableException("Repairer with ID%d is unavailable".formatted(id));
-        }
-        return order;
-    }
+//        }
+//        return order;
+//    }
 
     public Order assignGarageSlot(Order order, Long garageId) {
         return orderRepository.assignGarageSlot(order, garageId);

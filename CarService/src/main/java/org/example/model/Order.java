@@ -1,18 +1,33 @@
 package org.example.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @OneToOne
+    @JoinColumn(name = "garages_id", referencedColumnName = "id")
     private GarageSlot garageSlot;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "repairers_in_orders",
+        joinColumns = @JoinColumn(name = "repairers_id"),
+            inverseJoinColumns = @JoinColumn(name = "orders_id"))
     private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
+    @Column(name = "creation_date")
     private LocalDate creationDate;
+    @Column(name = "completion_date")
     private LocalDate completionDate;
-    private Long id;
-    private Long garagesId;
+
+
 
     public Order() {
         this.creationDate = LocalDate.now();
@@ -24,15 +39,6 @@ public class Order {
         this.cost = cost;
         this.creationDate = LocalDate.now();
         this.inProgress = true;
-    }
-
-    public Order(Long id, int cost, boolean inProgress, GarageSlot garageSlot, LocalDate creationDate, LocalDate completionDate) {
-        this.id = id;
-        this.cost = cost;
-        this.inProgress = true;
-        this.garageSlot = garageSlot;
-        this.creationDate = creationDate;
-        this.completionDate = completionDate;
     }
 
     public Order(Long id, int cost, boolean inProgress, GarageSlot garageSlot,
@@ -60,6 +66,10 @@ public class Order {
 
     public Collection<Repairer> getRepairers() {
         return repairers;
+    }
+
+    public void setRepairers(Collection<Repairer> repairers) {
+        this.repairers = repairers;
     }
 
     public int getCost() {
