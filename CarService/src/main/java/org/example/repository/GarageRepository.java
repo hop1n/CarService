@@ -9,7 +9,7 @@ import org.example.model.GarageSlot;
 import java.util.List;
 
 public class GarageRepository {
-    EntityManagerFactory entityManager = HibernateUtil.getEntityManager();
+    EntityManagerFactory entityManager = HibernateUtil.getEntityManagerFactory();
 
     public GarageSlot addGarageSlot() {
         GarageSlot garageSlot = new GarageSlot();

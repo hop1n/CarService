@@ -11,6 +11,6 @@
         <property name="hibernate.connection.password">root</property>
         <property name="hibernate.show_sql">true</property>
         <mapping class="org.example.model.Repairer"/>
-            <mapping class="org.example.model.GarageSlot"/>
+        <mapping class="org.example.model.GarageSlot"/>
     </session-factory>
 </hibernate-configuration>

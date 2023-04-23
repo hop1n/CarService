@@ -64,7 +64,7 @@ public class OrderRepository {
                 garageSlot = null;
             } else {
                 long garageSlotId = resultSet.getLong("garages_id");
-                garageSlot = garageRepository.getById(garageSlotId);
+                garageSlot = garageRepository.getGarageSlotById(garageSlotId);
             }
 
             LocalDate creationDate = resultSet.getDate("creation_date").toLocalDate();
@@ -217,7 +217,7 @@ public class OrderRepository {
             statement.setLong(2, order.getId());
             statement.executeUpdate();
 
-            GarageSlot garageSlot = garageRepository.getById(garageId);
+            GarageSlot garageSlot = garageRepository.getGarageSlotById(garageId);
             if (garageSlot.isAvailable()) {
                 setGarageIsAvailable(garageSlot, false);
                 return getOrderById(order.getId());
@@ -241,7 +241,7 @@ public class OrderRepository {
             statement.executeUpdate();
 
             Collection<Repairer> repairers = order.getRepairers();
-            GarageSlot garageSlot = garageRepository.getById(order.getGarageSlot().getId());
+            GarageSlot garageSlot = garageRepository.getGarageSlotById(order.getGarageSlot().getId());
             if (!repairers.isEmpty() && garageSlot != null) {
                 for (Repairer repairer : repairers) {
                     setRepairerIsAvailable(repairer, true);
