@@ -1,85 +1,61 @@
 package org.example.repository;
 
-import org.example.connector.JDBCConfig;
-import org.example.exception.GarageNotFoundException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityNotFoundException;
+import org.example.connector.HibernateUtil;
 import org.example.model.GarageSlot;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class GarageRepository {
-    private static final String SQL_FIND_BY_ID = "SELECT id, isAvailable FROM carservice.garages WHERE id = (?);";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM carservice.garages";
-    private static final String SQL_ADD_GARAGE_SLOT = "INSERT INTO carservice.garages (isAvailable) VALUES ((?));";
-    private static final String SQL_REMOVE_GARAGE_SLOT = "DELETE FROM carservice.garages WHERE id = (?);";
-    private static final Function<ResultSet, GarageSlot> garageMapper = resultSet -> {
+    EntityManagerFactory entityManager = HibernateUtil.getEntityManager();
+
+    public GarageSlot addGarageSlot() {
+        GarageSlot garageSlot = new GarageSlot();
+        EntityManager session = entityManager.createEntityManager();
+        session.getTransaction().begin();
         try {
-            Long id = resultSet.getLong("id");
-            boolean isAvailable = resultSet.getBoolean("isAvailable");
-            return new GarageSlot(id, isAvailable);
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
+            session.persist(garageSlot);
+            session.getTransaction().commit();
+        } finally {
+            session.close();
         }
-    };
+        return garageSlot;
+    }
+
+    public void deleteGarageSlotById(Long id) {
+        EntityManager session = entityManager.createEntityManager();
+        GarageSlot garageSlot = session.find(GarageSlot.class, id);
+//        if (garageSlot == null){
+//            throw new GarageNotFoundException("Garage with such id not found");
+//        }
+        try {
+            session.getTransaction().begin();
+            session.remove(garageSlot);
+            session.getTransaction().commit();
+        } finally {
+            session.close();
+        }
+    }
+
+    public GarageSlot getGarageSlotById(Long id) {
+        EntityManager session = entityManager.createEntityManager();
+        session.getTransaction().begin();
+        try {
+            GarageSlot garageSlot = session.find(GarageSlot.class, id);
+            if (garageSlot == null) {
+                throw new EntityNotFoundException("Garage with such id not found");
+            } else {
+            return garageSlot;
+        } }finally {
+            session.close();
+        }
+    }
 
     public List<GarageSlot> getGarageSlots() {
-        List<GarageSlot> garageSlots = new ArrayList<>();
-        try (Connection connection = JDBCConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    garageSlots.add(garageMapper.apply(resultSet));
-                }
-            }
-            return garageSlots;
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public GarageSlot getById(Long garageSlotId) {
-        try (Connection connection = JDBCConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
-            statement.setLong(1, garageSlotId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return garageMapper.apply(resultSet);
-                } else {
-                    throw new GarageNotFoundException("Garage with this id doesn't exist");
-                }
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public GarageSlot addGarageSlot(){
-        GarageSlot garageSlot = new GarageSlot();
-        try (Connection connection = JDBCConfig.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SQL_ADD_GARAGE_SLOT, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setBoolean(1, garageSlot.isAvailable());
-            statement.executeUpdate();
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return getById(generatedKeys.getLong(1));
-                } else {
-                    throw new SQLException("id cannot be found");
-                }
-            }
-        }catch (SQLException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void removeGarageSlot(Long garageSlotId){
-        try (Connection connection = JDBCConfig.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_GARAGE_SLOT, Statement.RETURN_GENERATED_KEYS)){
-            statement.setLong(1, garageSlotId);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        EntityManager session = entityManager.createEntityManager();
+        return session.createQuery("SELECT e FROM GarageSlot e", GarageSlot.class).getResultList();
     }
 }
+
