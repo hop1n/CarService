@@ -10,6 +10,7 @@ public class GetGarageSlotByIdServlet extends JsonServlet{
     public GetGarageSlotByIdServlet(GarageService garageService) {
         this.garageService = garageService;
     }
+
     @Override
     Response get(String uri, Map<String, String[]> parameters) {
         long id = Long.parseLong(uri.substring(uri.lastIndexOf('/')+1));
