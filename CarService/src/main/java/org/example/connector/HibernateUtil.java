@@ -6,20 +6,20 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateUtil {
-    private static EntityManagerFactory entityManager;
+    private static EntityManagerFactory entityManagerFactory;
 
     static {
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure()
                 .build();
         try {
-            entityManager = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            entityManagerFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         } catch (Exception e) {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }
 
     public static EntityManagerFactory getEntityManager() {
-        return entityManager;
+        return entityManagerFactory;
     }
 }
