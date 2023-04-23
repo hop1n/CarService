@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public class Order {
     private GarageSlot garageSlot;
-    private final Collection<Repairer> repairers = new ArrayList<>();
+    private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
     private boolean inProgress;
     private LocalDate creationDate;
@@ -33,6 +33,17 @@ public class Order {
         this.garageSlot = garageSlot;
         this.creationDate = creationDate;
         this.completionDate = completionDate;
+    }
+
+    public Order(Long id, int cost, boolean inProgress, GarageSlot garageSlot,
+                 LocalDate creationDate, LocalDate completionDate, Collection<Repairer> repairers) {
+        this.id = id;
+        this.cost = cost;
+        this.inProgress = inProgress;
+        this.garageSlot = garageSlot;
+        this.creationDate = creationDate;
+        this.completionDate = completionDate;
+        this.repairers = repairers;
     }
 
     public void addRepair(Repairer repairer) {
