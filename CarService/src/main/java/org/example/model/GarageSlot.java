@@ -1,16 +1,17 @@
 package org.example.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "garages")
 public class GarageSlot {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private boolean isAvailable;
 
     public GarageSlot() {
         isAvailable = true;
-    }
-
-    public GarageSlot(Long id, boolean isAvailable) {
-        this.id = id;
-        this.isAvailable = isAvailable;
     }
 
     public Long getId() {
