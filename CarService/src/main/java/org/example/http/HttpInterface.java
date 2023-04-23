@@ -1,4 +1,4 @@
-package org.example.servlet;
+package org.example.http;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -15,7 +15,7 @@ public class HttpInterface {
     private Server server;
 
     RepairerService repairerService = new RepairerService();
-    GarageSettings garageSettings = new GarageSettings("CarService/src/main/resources/application.properties");
+    GarageSettings garageSettings = new GarageSettings("src/main/resources/application.properties");
     GarageService garageService = new GarageService(garageSettings);
     OrderService orderService = new OrderService(repairerService, garageService);
 
@@ -106,8 +106,8 @@ public class HttpInterface {
                         "/get-repairer-by-id");
         servletHandler
                 .addServletWithMapping(new ServletHolder(
-                        new RemoveRepairerServlet(repairerService)),
-                "/remove-repairer");
+                                new RemoveRepairerServlet(repairerService)),
+                        "/remove-repairer");
 
     }
 }
