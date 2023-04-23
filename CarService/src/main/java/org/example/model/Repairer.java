@@ -1,24 +1,23 @@
 package org.example.model;
 
-public class Repairer {
-    private Long id;
-    private final String name;
-    private boolean isAvailable;
+import jakarta.persistence.*;
 
-    public Repairer() {
-        this.name = "";
-        isAvailable = true;
-    }
+@Entity
+@Table(name = "repairers")
+public class Repairer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private boolean isAvailable;
 
     public Repairer(String name) {
         this.name = name;
         isAvailable = true;
     }
 
-    public Repairer(Long id, String name, boolean isAvailable) {
-        this.id = id;
-        this.name = name;
-        this.isAvailable = isAvailable;
+    public Repairer() {
     }
 
     public Long getId() {
