@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -16,8 +17,8 @@ public class Order {
     private GarageSlot garageSlot;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "repairers_in_orders",
-        joinColumns = @JoinColumn(name = "repairers_id"),
+            name = "repairers_in_orders",
+            joinColumns = @JoinColumn(name = "repairers_id"),
             inverseJoinColumns = @JoinColumn(name = "orders_id"))
     private Collection<Repairer> repairers = new ArrayList<>();
     private int cost;
@@ -26,7 +27,6 @@ public class Order {
     private LocalDate creationDate;
     @Column(name = "completion_date")
     private LocalDate completionDate;
-
 
 
     public Order() {
@@ -66,10 +66,6 @@ public class Order {
 
     public Collection<Repairer> getRepairers() {
         return repairers;
-    }
-
-    public void setRepairers(Collection<Repairer> repairers) {
-        this.repairers = repairers;
     }
 
     public int getCost() {
@@ -112,7 +108,7 @@ public class Order {
         this.id = id;
     }
 
-    @Override
+        @Override
     public String toString() {
         return '\n' + "Order{" +
                 "id=" + id + "," + "garageSlot=" + garageSlot + "," +
