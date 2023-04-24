@@ -14,8 +14,6 @@ public class RepairerService implements Service<Repairer> {
     @Override
     public Repairer getById(Long id) {
         return repository.getById(id);
-//        return repairers.stream().filter(repairer -> Objects.equals(repairer.getId(), id)).findFirst()
-//                .orElseThrow(() -> new RepairerNotFoundException("there is no repairer with id: %d".formatted(id)));
     }
 
     @Override
@@ -26,11 +24,6 @@ public class RepairerService implements Service<Repairer> {
     @Override
     public boolean remove(Long id) {
         return repository.remove(id);
-//        boolean removeFlag = repairers.removeIf(repairer -> repairer.getId() == id);
-//        if (!removeFlag) {
-//            throw new RepairerNotFoundException("there is no repairer with id: %d".formatted(id));
-//        }
-//        return true;
     }
 
     @Override

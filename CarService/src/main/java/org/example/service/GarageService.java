@@ -8,7 +8,6 @@ import org.example.settings.GarageSettings;
 import java.util.List;
 
 public class GarageService implements Service<GarageSlot> {
-    //private final GarageRepository garageRepository = new GarageRepository();
     private final GarageRepository garageRepo = new GarageRepository();
 
     public GarageService(GarageSettings garageSettings) {
@@ -17,13 +16,6 @@ public class GarageService implements Service<GarageSlot> {
 
     @Override
     public boolean remove(Long id) {
-//        garageRepository.removeGarageSlot(id);
-//        if (garageSettings.isChangeable()){
-//            garageRepo.deleteGarageSlotById(id);
-//        } else {
-//            throw new AssignDeprecatedMethod("You can't change the number of garages");
-//        }
-//        return true;
         garageRepo.deleteGarageSlotById(id);
         return true;
     }
@@ -35,24 +27,13 @@ public class GarageService implements Service<GarageSlot> {
                 throw new EntityNotFoundException("Garage with such id not found");
             }
         return garageSlot;
-//        return garageRepository.getById(id);
-//        return garageSlots.stream().filter(slot -> slot.getId().equals(id)).findFirst()
-//                .orElseThrow(() -> new GarageNotFoundException("Garage with such id not found"));
     }
 
     public List<GarageSlot> getGarageSlots() {
         return garageRepo.getGarageSlots();
-//        return garageRepository.getGarageSlots();
     }
 
     public GarageSlot add(GarageSlot garageSlot) {
-//        return garageRepository.addGarageSlot();
-//        if (garageSettings.isChangeable()) {
-//            garageRepo.addGarageSlot();
-//        } else {
-//            throw new AssignDeprecatedMethod("You can't change the number of garages");
-//        }
-//        return garageSlot;
         return garageRepo.addGarageSlot();
     }
 }
